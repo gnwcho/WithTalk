@@ -21,6 +21,7 @@ public class NettyServerApplication implements CommandLineRunner {
 	}
 
 	public void run(String... args) throws Exception {
+		//원격 저장소
 		nettyServer.start();
 	}
 }
