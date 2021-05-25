@@ -5,6 +5,9 @@ import java.util.List;
 import com.withTalk.server.model.Member;
 
 public interface MemberService {
+	// 회원 가입
+	public int signUp(Member member) throws Exception;
+	
 	// 아이디 찾기
 	public List<Member> findId(Member member) throws Exception;
 

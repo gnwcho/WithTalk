@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.withTalk.server.model.Friend;
 import com.withTalk.server.model.Member;
+import com.withTalk.server.repository.MemberMapper;
 import com.withTalk.server.service.FriendServiceImpl;
 import com.withTalk.server.service.MemberServiceImpl;
 
@@ -28,7 +29,6 @@ public class JsonHandler extends SimpleChannelInboundHandler<String> {
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, String msg) throws Exception {
 		JSONObject jsonObj = (JSONObject) parser.parse(msg);
-		System.out.println("msg : " + msg);
 		String method = (String) jsonObj.get("method");
 		
 		Member member = new Member();
@@ -37,9 +37,22 @@ public class JsonHandler extends SimpleChannelInboundHandler<String> {
 		Friend friend = new Friend();
 		Friend resultFriend = null;
 		
+		int result = 0;
+		
 		switch (method) {
-			case "login" :
+			case "signUp" :
+				member.setId((String) jsonObj.get("id"));
+				member.setName((String) jsonObj.get("name"));
+				member.setPassword((String) jsonObj.get("password"));
+				member.setPhoneNo((String) jsonObj.get("phone_no"));
 				
+				result = memberServiceImpl.signUp(member);
+				
+				ctx.writeAndFlush(result);
+			break;
+	
+			case "login" :
+					
 				break;
 				
 			case "findId" :
@@ -66,7 +79,7 @@ public class JsonHandler extends SimpleChannelInboundHandler<String> {
 				
 				System.out.println("insertFriend: " + friend);
 				
-				int result = friendServiceImpl.insert(friend);
+				result = friendServiceImpl.insert(friend);
 				
 				System.out.println("insertFriend 결과 : " + result);
 				

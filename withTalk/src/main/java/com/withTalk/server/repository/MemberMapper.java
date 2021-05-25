@@ -8,7 +8,7 @@ import com.withTalk.server.model.Member;
 
 @Mapper
 public interface MemberMapper {
-	public void insert(Member member) throws Exception;
+	public int insert(Member member) throws Exception;
 
 	public List<Member> selectAll(Member member) throws Exception;
 	

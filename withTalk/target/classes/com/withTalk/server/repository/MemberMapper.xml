@@ -4,14 +4,15 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.withTalk.server.repository.MemberMapper">
-   <resultMap id="memberResultMap" type="com.withTalk.server.model.Member">
-      <result column="ID" property="id" />
-      <result column="NAME" property="name" />
-      <result column="PASSWORD" property="password" />
-      <result column="PHONE_NO" property="phoneNo" />
-   </resultMap>
-   
-   <sql id="whereSql">
+	<resultMap id="memberResultMap" 
+		type="com.withTalk.server.model.Member">
+		<result column="ID" property="id" />
+		<result column="NAME" property="name" />
+		<result column="PASSWORD" property="password" />
+		<result column="PHONE_NO" property="phoneNo" />
+	</resultMap>
+	
+	<sql id="whereSql">
 		<where>
 			<if test="id != null and id != ''">
 				AND ID = #{id}
@@ -27,8 +28,10 @@
 			</if>
 		</where>
 	</sql>
-   
-  <select id="select" parameterType="com.withTalk.server.model.Member" resultMap="memberResultMap">
+
+	<select id="select"
+		parameterType="com.withTalk.server.model.Member"
+		resultMap="memberResultMap">
 		SELECT
 		ID,
 		PASSWORD,
@@ -38,33 +41,46 @@
 		<include refid="whereSql" />
 		ORDER BY ID
 	</select>
+	
+	<insert id="insert"
+		parameterType="com.withTalk.server.model.Member">
+		INSERT INTO MEMBER 
+		VALUES(
+		#{id}
+		, #{name}
+		, #{password}
+		, #{phoneNo}
+		)
+	</insert>
+	
+	<select id="count"
+		parameterType="com.withTalk.server.model.Member" resultType="int">
+		SELECT
+		COUNT(*)
+		FROM MEMBER
+	</select>
 
-   <select id="count" parameterType="com.withTalk.server.model.Member" resultType="int">
-      SELECT
-      COUNT(*)
-      FROM MEMBER
-   </select>
+	<select id="login"
+		parameterType="com.withTalk.server.model.Member" resultType="int">
+		SELECT
+		COUNT(*)
+		FROM MEMBER
+		WHERE ID=#{id} AND PASSWORD=#{password}
+	</select>
 
-   <select id="login" parameterType="com.withTalk.server.model.Member" resultType="int">
-      SELECT
-      COUNT(*)
-      FROM MEMBER
-      WHERE ID=#{id} AND PASSWORD=#{password}
-   </select>
+	<insert id="signUp"
+		parameterType="com.withTalk.server.model.Member">
+		INSERT INTO MEMBER (
+		ID
+		, NAME
+		, PASSWORD
+		, PHONE_NO
+		) VALUES (
 
-   <insert id="signUp" parameterType="com.withTalk.server.model.Member">
-      INSERT INTO MEMBER (
-      ID
-      , NAME
-      , PASSWORD
-      , PHONE_NO
-      ) VALUES (
-      
-      #{id}
-      , #{name}
-      , #{password}
-      , #{phoneNo}
-      )
-   </insert>
-
+		#{id}
+		, #{name}
+		, #{password}
+		, #{phoneNo}
+		)
+	</insert>
 </mapper>

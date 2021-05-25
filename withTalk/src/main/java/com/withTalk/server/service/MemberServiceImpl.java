@@ -12,6 +12,12 @@ import com.withTalk.server.repository.MemberMapper;
 public class MemberServiceImpl implements MemberService {
 	@Autowired
 	public MemberMapper memberMapper;
+	
+	@Override
+	public int signUp(Member member) throws Exception {
+		int result = memberMapper.insert(member);
+		return result;
+	}
 
 	public List<Member> findId(Member member) throws Exception {
 
@@ -43,5 +49,4 @@ public class MemberServiceImpl implements MemberService {
 	public void modifyMemberInfo(Member member) throws Exception {
 
 	}
-
 }
