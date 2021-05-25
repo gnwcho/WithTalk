@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.withTalk.server.repository.FriendMapper">
+	<resultMap id="friendResultMap"
+		type="com.withTalk.server.model.Friend">
+		<result column="SEQUENCE_NO" property="sequenceNo" />
+		<result column="MEMBER_ID" property="memberId" />
+		<result column="FRIENDID" property="friendId" />
+	</resultMap>
+
+	<resultMap id="memberResultMap"
+		type="com.withTalk.server.model.Member">
+		<result column="ID" property="id" />
+		<result column="NAME" property="name" />
+		<result column="PASSWORD" property="password" />
+		<result column="PHONE_NO" property="phoneNo" />
+	</resultMap>
+
+	<sql id="whereSql">
+		<where>
+			<if test="sequenceNo != null and sequenceNo != ''">
+				AND SEQUENCE_NO = BINARY #{sequenceNo}
+			</if>
+			<if test="memberId != null and memberId != ''">
+				AND MEMBER_ID = BINARY #{memberId}
+			</if>
+			<if test="friendId != null and friendId != ''">
+				AND FRIENDID = #{friendId}
+			</if>
+		</where>
+	</sql>
+
+	<select id="selectAll"
+		parameterType="com.withTalk.server.model.Friend"
+		resultMap="friendResultMap">
+		SELECT *
+		FROM FROM FRIEND
+		<include refid="whereSql" />
+		ORDER BY ID
+	</select>
+
+	<select id="selectByName"
+		parameterType="com.withTalk.server.model.Friend"
+		resultMap="memberResultMap">
+		SELECT M.ID, M.NAME
+		FROM FRIEND F, MEMBER M
+		WHERE
+		F.MEMBER_ID=M.ID AND M.ID=#{id}
+	</select>
+
+	<insert id="insert"
+		parameterType="com.withTalk.server.model.Friend">
+		INSERT INTO FRIEND
+		VALUES (
+		FRIEND_SEQ.NEXTVAL
+		, #{memberId}
+		, #{friendId}
+		)
+	</insert>
+</mapper>
