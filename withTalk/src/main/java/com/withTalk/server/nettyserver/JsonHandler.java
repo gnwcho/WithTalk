@@ -38,6 +38,10 @@ public class JsonHandler extends SimpleChannelInboundHandler<String> {
 		Friend resultFriend = null;
 		
 		switch (method) {
+			case "login" :
+				
+				break;
+				
 			case "findId" :
 				member.setName((String)jsonObj.get("name"));
 				member.setPhoneNo((String)jsonObj.get("phoneNo"));
