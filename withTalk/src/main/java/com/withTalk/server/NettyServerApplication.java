@@ -21,6 +21,7 @@ public class NettyServerApplication implements CommandLineRunner {
 	}
 
 	public void run(String... args) throws Exception {
+		//브랜치추가
 		nettyServer.start();
 	}
 }
