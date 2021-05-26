@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.withTalk.server.nettyserver.JsonHandler;
+import com.withTalk.server.handler.CommonHandler;
+import com.withTalk.server.handler.FriendHandler;
+import com.withTalk.server.handler.MemberHandler;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -23,7 +25,11 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel>{
 	private static final StringEncoder STRING_ENCODER = new StringEncoder(CharsetUtil.UTF_8);
 
 	@Autowired
-	JsonHandler jsonHandler;
+	MemberHandler memberHandler;
+	@Autowired
+	FriendHandler friendHandler;
+	@Autowired
+	CommonHandler commonHandler;
 	
 	@Override
 	   protected void initChannel(SocketChannel ch) throws Exception {
@@ -36,6 +42,8 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel>{
 	      })
 	      .addLast(STRING_DECODER)
 	      .addLast(STRING_ENCODER)
-	      .addLast(jsonHandler);
+	      .addLast(memberHandler)
+	      .addLast(commonHandler)
+	      .addLast(friendHandler);
 	   }
 }
