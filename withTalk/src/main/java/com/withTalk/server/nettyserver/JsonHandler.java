@@ -12,6 +12,7 @@ import com.withTalk.server.service.FriendServiceImpl;
 import com.withTalk.server.service.MemberServiceImpl;
 
 import io.netty.channel.ChannelHandler.Sharable;
+import io.netty.handler.codec.json.JsonObjectDecoder;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -37,7 +38,9 @@ public class JsonHandler extends SimpleChannelInboundHandler<String> {
 		Friend friend = new Friend();
 		Friend resultFriend = null;
 		
-		int result = 0;
+		JSONObject resultJson = new JSONObject();
+		
+		String result = null;
 		
 		switch (method) {
 			case "signUp" :
@@ -48,11 +51,34 @@ public class JsonHandler extends SimpleChannelInboundHandler<String> {
 				
 				result = memberServiceImpl.signUp(member);
 				
-				ctx.writeAndFlush(result);
+				resultJson.put("method", method);
+				resultJson.put("status", result);
+				
+				ctx.writeAndFlush(resultJson.toJSONString());
 			break;
 	
 			case "login" :
-					
+				member.setId((String) jsonObj.get("id"));
+				member.setPassword((String) jsonObj.get("password"));
+				
+				result = memberServiceImpl.login(member);
+				
+				resultJson.put("method", method);
+				resultJson.put("status", result);
+				
+				ctx.writeAndFlush(resultJson.toJSONString());
+				
+				break;
+				
+			case "checkId" :
+				member.setId((String) jsonObj.get("id"));
+				
+				result = memberServiceImpl.checkId(member);
+				
+				resultJson.put("method", method);
+				resultJson.put("status", result);
+				
+				ctx.writeAndFlush(resultJson.toJSONString());
 				break;
 				
 			case "findId" :
@@ -79,11 +105,11 @@ public class JsonHandler extends SimpleChannelInboundHandler<String> {
 				
 				System.out.println("insertFriend: " + friend);
 				
-				result = friendServiceImpl.insert(friend);
+				/*result = friendServiceImpl.insert(friend);
 				
 				System.out.println("insertFriend 결과 : " + result);
 				
-				ctx.writeAndFlush(result);
+				ctx.writeAndFlush(result);*/
 				break;
 				
 			case "searchFriend" :

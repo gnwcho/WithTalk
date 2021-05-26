@@ -6,7 +6,13 @@ import com.withTalk.server.model.Member;
 
 public interface MemberService {
 	// 회원 가입
-	public int signUp(Member member) throws Exception;
+	public String signUp(Member member) throws Exception;
+	
+	//아이디 체크
+	public String checkId(Member member) throws Exception;
+	
+	//로그인
+	public String login(Member member) throws Exception;
 	
 	// 아이디 찾기
 	public List<Member> findId(Member member) throws Exception;

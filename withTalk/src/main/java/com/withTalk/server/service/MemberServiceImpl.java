@@ -14,11 +14,48 @@ public class MemberServiceImpl implements MemberService {
 	public MemberMapper memberMapper;
 	
 	@Override
-	public int signUp(Member member) throws Exception {
-		int result = memberMapper.insert(member);
+	public String signUp(Member member) throws Exception {
+		String result = null;
+		
+		if (memberMapper.select(member) == null) {
+			if(memberMapper.insert(member) == 1) {
+				result = "r200";
+			}
+		} else {
+			result = "r400";
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public String login(Member member) throws Exception {
+		String result = null;
+		
+		//로그인 성공
+		if (memberMapper.select(member) != null) {
+			result = "r200";
+		} else {
+			result = "r400";
+		}
+		
 		return result;
 	}
 
+	@Override
+	public String checkId(Member member) throws Exception {
+		String result = null;
+		
+		//중복된 아이디 있을 경우
+		if (memberMapper.select(member) == null) {
+			result = "r200";
+		} else {
+			result = "r400";
+		}
+		
+		return result;
+	}
+	
 	public List<Member> findId(Member member) throws Exception {
 
 		return null;
