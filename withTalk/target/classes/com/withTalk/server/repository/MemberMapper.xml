@@ -49,14 +49,6 @@
 		FROM MEMBER
 	</select>
 
-	<select id="login"
-		parameterType="com.withTalk.server.model.Member" resultType="int">
-		SELECT
-		COUNT(*)
-		FROM MEMBER
-		WHERE ID=#{id} AND PASSWORD=#{password}
-	</select>
-
 	<insert id="insert"
 		parameterType="com.withTalk.server.model.Member">
 		INSERT INTO MEMBER 
