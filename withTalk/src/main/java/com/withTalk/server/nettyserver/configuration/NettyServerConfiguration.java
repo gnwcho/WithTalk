@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import com.withTalk.server.nettyserver.JsonHandler;
 import com.withTalk.server.nettyserver.Initializer.NettyChannelInitializer;
 
 import io.netty.bootstrap.ServerBootstrap;
@@ -57,12 +56,6 @@ public class NettyServerConfiguration {
 	@Bean
 	public EventLoopGroup childGroup() {
 		return new NioEventLoopGroup();
-	}
-	
-	
-	@Bean
-	public SimpleChannelInboundHandler<String> handler() {
-		return new JsonHandler();
 	}
 	
 	@Bean
