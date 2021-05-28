@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.withTalk.server.handler.ChatHandler;
+import com.withTalk.server.handler.ChatRoomHandler;
 import com.withTalk.server.handler.CommonHandler;
 import com.withTalk.server.handler.FriendHandler;
 import com.withTalk.server.handler.MemberHandler;
@@ -30,6 +32,10 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel>{
 	FriendHandler friendHandler;
 	@Autowired
 	CommonHandler commonHandler;
+	@Autowired
+	ChatRoomHandler chatRoomHandler;
+	@Autowired
+	ChatHandler chatHandler;
 	
 	@Override
 	   protected void initChannel(SocketChannel ch) throws Exception {
@@ -44,6 +50,8 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel>{
 	      .addLast(STRING_ENCODER)
 	      .addLast(memberHandler)
 	      .addLast(commonHandler)
-	      .addLast(friendHandler);
+	      .addLast(friendHandler)
+	      .addLast(chatRoomHandler)
+	      .addLast(chatHandler);
 	   }
 }

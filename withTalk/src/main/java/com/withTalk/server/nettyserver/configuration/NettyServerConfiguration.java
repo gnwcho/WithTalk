@@ -1,6 +1,10 @@
 package com.withTalk.server.nettyserver.configuration;
 
 import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +16,9 @@ import org.springframework.context.annotation.PropertySource;
 import com.withTalk.server.nettyserver.Initializer.NettyChannelInitializer;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
@@ -61,5 +65,15 @@ public class NettyServerConfiguration {
 	@Bean
 	public JSONParser parser() {
 		return new JSONParser();
+	}
+	
+	@Bean
+	public Map<String, Channel> idMap() {
+		return new HashMap<String, Channel>();
+	}
+	
+	@Bean
+	public HashMap<Integer, Set<String>> chatRoomMap() {
+		return new HashMap<Integer, Set<String>>();
 	}
 }

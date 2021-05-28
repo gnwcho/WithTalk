@@ -12,7 +12,9 @@ import com.withTalk.server.service.MemberServiceImpl;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.ChannelHandler.Sharable;
 
+@Sharable
 @Component
 public class FriendHandler extends SimpleChannelInboundHandler<String> {
 	@Autowired
@@ -92,7 +94,7 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 					System.out.println("not found method...");
 			}
 		} else {
-			
+			ctx.fireChannelRead(msg);
 		}
 	}
 	
