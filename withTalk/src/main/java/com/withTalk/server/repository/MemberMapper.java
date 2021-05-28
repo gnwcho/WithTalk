@@ -12,6 +12,8 @@ public interface MemberMapper {
 	
 	public List<Member> selectAll(Member member) throws Exception;
 	
+	public List<String> selectAllId() throws Exception;
+	
 	public List<Member> selectAllById(Member member) throws Exception;
 
 	public Member select(Member member) throws Exception;

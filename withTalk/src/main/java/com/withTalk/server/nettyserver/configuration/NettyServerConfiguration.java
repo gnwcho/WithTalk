@@ -1,6 +1,8 @@
 package com.withTalk.server.nettyserver.configuration;
 
 import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,19 +11,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import com.withTalk.server.nettyserver.JsonHandler;
 import com.withTalk.server.nettyserver.Initializer.NettyChannelInitializer;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
-@SuppressWarnings("deprecation")
 @Configuration
 @PropertySource("classpath:application.properties")
 public class NettyServerConfiguration {
@@ -59,14 +59,13 @@ public class NettyServerConfiguration {
 		return new NioEventLoopGroup();
 	}
 	
-	
-	@Bean
-	public SimpleChannelInboundHandler<String> handler() {
-		return new JsonHandler();
-	}
-	
 	@Bean
 	public JSONParser parser() {
 		return new JSONParser();
+	}
+	
+	@Bean
+	public Map<String, Channel> mappingMember() {
+		return new HashMap<String, Channel>();
 	}
 }

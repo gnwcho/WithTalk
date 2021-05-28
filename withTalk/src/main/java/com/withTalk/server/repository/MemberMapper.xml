@@ -41,6 +41,14 @@
 		<include refid="whereSql" />
 		ORDER BY ID
 	</select>
+	
+	<select id="selectAllId"
+		resultType="String">
+		SELECT
+		ID
+		FROM MEMBER
+		ORDER BY ID
+	</select>
 
 	<select id="count"
 		parameterType="com.withTalk.server.model.Member" resultType="int">

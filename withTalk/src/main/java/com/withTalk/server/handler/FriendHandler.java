@@ -1,5 +1,7 @@
 package com.withTalk.server.handler;
 
+import java.util.Map;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +12,16 @@ import com.withTalk.server.model.Member;
 import com.withTalk.server.service.FriendServiceImpl;
 import com.withTalk.server.service.MemberServiceImpl;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.ChannelHandler.Sharable;
 
 @Component
+@Sharable
 public class FriendHandler extends SimpleChannelInboundHandler<String> {
 	@Autowired
 	JSONParser parser;
-	
 	@Autowired
 	public MemberServiceImpl memberServiceImpl;
 	@Autowired
