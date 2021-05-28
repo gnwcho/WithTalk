@@ -10,7 +10,9 @@ import com.withTalk.server.service.MemberServiceImpl;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.ChannelHandler.Sharable;
 
+@Sharable
 @Component
 public class CommonHandler extends SimpleChannelInboundHandler<String> {
 	@Autowired
