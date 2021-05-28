@@ -42,17 +42,13 @@
 		ORDER BY ID
 	</select>
 
-	<select id="selectByName"
-		parameterType="com.withTalk.server.model.Friend"
-		resultMap="memberResultMap">
-		SELECT M.ID, M.NAME
-		FROM FRIEND F, MEMBER M
-		WHERE
-		F.MEMBER_ID=M.ID AND M.ID=#{id}
+	<select id="select" parameterType="com.withTalk.server.model.Friend" resultMap="memberResultMap">
+		SELECT *
+		FROM MEMBER M
+		<include refid="whereSql" />
 	</select>
 
-	<insert id="insert"
-		parameterType="com.withTalk.server.model.Friend">
+	<insert id="insert" parameterType="com.withTalk.server.model.Friend">
 		INSERT INTO FRIEND
 		VALUES (
 		FRIEND_SEQ.NEXTVAL
@@ -60,4 +56,9 @@
 		, #{friendId}
 		)
 	</insert>
+	
+	<select id="plusSeq" resultType="int">
+		SELECT CHATROOM_SEQ.NEXTVAL
+		FROM DUAL
+	</select>
 </mapper>

@@ -46,44 +46,32 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 			String method = (String) jsonObj.get("method");
 
 			switch (method) {
-				case "findId":
-					member.setName((String)jsonObj.get("name"));
-					member.setPhoneNo((String)jsonObj.get("phoneNo"));
-					
-					resultMember = memberServiceImpl.searchMemberInfo(member);
-					
-					ctx.writeAndFlush(resultMember.getId());
-					break;
-					
-				case "findPassword":
-					member.setId((String)jsonObj.get("id"));
-					member.setName((String)jsonObj.get("name"));
-					
-					resultMember = memberServiceImpl.searchMemberInfo(member);
-					
-					ctx.writeAndFlush(resultMember.getPassword());
-					break;
-					
 				case "insertFriend" :
 					friend.setMemberId((String)jsonObj.get("memberId"));
 					friend.setFriendId((String)jsonObj.get("friendId"));
 					
-					System.out.println("insertFriend: " + friend);
+					System.out.println("insertFriend: " + friend.getFriendId() + "_" + friend.getMemberId());
 					
-					/*result = friendServiceImpl.insert(friend);
+					int insertResult = friendServiceImpl.insert(friend);
 					
-					System.out.println("insertFriend 결과 : " + result);
+					System.out.println("insertFriend 결과 : " + insertResult);
 					
-					ctx.writeAndFlush(result);*/
+					ctx.writeAndFlush(insertResult);
 					break;
 	
 				case "searchFriend" :
-					member.setId((String)jsonObj.get("id"));
+					member.setPhoneNo((String)jsonObj.get("phoneNo"));
 					
-					resultMember = friendServiceImpl.selectByName(member);
+					resultMember = friendServiceImpl.search(member);
 					System.out.println("결과 : " + resultMember);
 					
-					ctx.writeAndFlush(resultMember.getName());
+					resultJson.put("type", type);
+					resultJson.put("method", method);
+					resultJson.put("id", resultMember.getId());
+					resultJson.put("name", resultMember.getName());
+					resultJson.put("phoneNo", resultMember.getPhoneNo());
+					
+					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
 					
 				case "selectAllFriend" :
