@@ -49,4 +49,29 @@
         FROM JOINCHATROOM
         <include refid="whereSql" />
     </select>
+    
+    <select id="selectAll"
+    	resultMap="joinChatRoomResultMap">
+    	SELECT
+    	SEQUENCE_NO
+    	, CHATROOM_NAME
+    	, JOIN_TIME
+    	, CHATROOM_NO
+    	, MEMBER_ID
+    	FROM JOINCHATROOM
+    </select>
+    
+    <select id="selectMemberByRoomId"
+    	parameterType="com.withTalk.server.model.ChatRoom"
+    	resultType="String">
+    	SELECT
+    	SEQUENCE_NO
+    	, CHATROOM_NAME
+    	, JOIN_TIME
+    	, CHATROOM_NO
+    	, MEMBER_ID
+    	FROM JOINCHATROOM
+    	WHERE
+    	CHATROOM_NO = #{sequenceNo};
+    </select>
 </mapper>

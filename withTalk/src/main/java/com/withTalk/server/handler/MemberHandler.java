@@ -59,6 +59,8 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 					
 					resultJson.put("method", method);
 					resultJson.put("status", result);
+					
+					System.out.println(resultJson.toJSONString());
 	
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
