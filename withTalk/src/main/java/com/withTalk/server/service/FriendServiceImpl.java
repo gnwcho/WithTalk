@@ -9,17 +9,23 @@ import org.springframework.transaction.annotation.Transactional;
 import com.withTalk.server.model.Friend;
 import com.withTalk.server.model.Member;
 import com.withTalk.server.repository.FriendMapper;
+import com.withTalk.server.repository.MemberMapper;
 
 @Service
 public class FriendServiceImpl implements FriendService{
 	@Autowired
 	public FriendMapper friendMapper;
+	@Autowired
+	public MemberMapper memberMapper;
 	
 	//친구 등록
 	@Transactional
 	@Override
 	public int insert(Friend friend) {
 		try {
+//			int no = friendMapper.plusSeq();
+//			System.out.println("no" + no);
+			System.out.println("friend : " + friend.getFriendId());
 			int result = friendMapper.insert(friend);
 			
 			return result;
@@ -30,11 +36,12 @@ public class FriendServiceImpl implements FriendService{
 	}
 	//친구 검색
 	@Override
-	public Member selectByName(Member member) {
+	public Member search(Member member) {
 		try {
 			System.out.println("넘어온 Member : " + member);
-			Member row = friendMapper.selectByName(member);
+			Member row = memberMapper.select(member);
 			System.out.println("selectMyName 결과 : " + row);
+			
 			return row;
 		} catch (Exception e) {
 			e.printStackTrace();

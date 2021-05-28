@@ -44,6 +44,30 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 			String method = (String) jsonObj.get("method");
 
 			switch (method) {
+				case "findId" :
+					member.setName((String)jsonObj.get("name"));
+					member.setPhoneNo((String)jsonObj.get("phoneNo"));
+					
+					resultMember = memberServiceImpl.searchMemberInfo(member);
+					
+					resultJson.put("type", "member");
+					resultJson.put("method", method);
+					resultJson.put("id", resultMember.getId());
+					
+					System.out.println("결과 : " + resultJson);
+					
+					ctx.writeAndFlush(resultJson.toJSONString());
+					break;
+					
+				case "findPassword" :
+					member.setId((String)jsonObj.get("id"));
+					member.setName((String)jsonObj.get("name"));
+					
+					resultMember = memberServiceImpl.searchMemberInfo(member);
+					
+					ctx.writeAndFlush(resultMember.getPassword());
+					break;	
+					
 				case "signUp":
 					String id = (String) jsonObj.get("id");
 					member.setId((String) jsonObj.get("id"));

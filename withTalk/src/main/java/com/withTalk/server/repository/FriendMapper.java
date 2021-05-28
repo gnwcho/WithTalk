@@ -13,7 +13,9 @@ public interface FriendMapper {
 
 	public List<Friend> selectAll(Friend friend) throws Exception;
 	
-	public Member selectByName(Member member) throws Exception;
+	public Member select(Member member) throws Exception;
 
 	public int delete(Friend friend) throws Exception;
+	
+	public int plusSeq() throws Exception;
 }
