@@ -8,6 +8,8 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.withTalk.server.handler.ChatHandler;
+import com.withTalk.server.handler.ChatRoomHandler;
 import com.withTalk.server.handler.CommonHandler;
 import com.withTalk.server.handler.FriendHandler;
 import com.withTalk.server.handler.MemberHandler;
@@ -35,21 +37,27 @@ public class NettyChannelInitializer extends ChannelInitializer<SocketChannel> {
 	@Autowired
 	CommonHandler commonHandler;
 	@Autowired
-	private Map<String, Channel> mappingMember;
-
+	Map<String, Channel> mappingMember;
+	@Autowired
+	ChatRoomHandler chatRoomHandler;
+	@Autowired
+	ChatHandler chatHandler;
+	
 	@Override
 	protected void initChannel(SocketChannel ch) throws Exception {
 		ChannelPipeline cp = ch.pipeline();
-		cp.addLast(new ByteToMessageDecoder() {
-			@Override
-			public void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-				out.add(in.readBytes(in.readableBytes()));
-			}
-		})
-		.addLast(STRING_DECODER)
-		.addLast(STRING_ENCODER)
-		.addLast(memberHandler)
-		.addLast(commonHandler)
-		.addLast(friendHandler);
-	}
+	    cp.addLast(new ByteToMessageDecoder() {
+	       @Override
+	       public void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+	          out.add(in.readBytes(in.readableBytes()));
+	       }
+	    })
+	    .addLast(STRING_DECODER)
+	    .addLast(STRING_ENCODER)
+	    .addLast(memberHandler)
+	    .addLast(commonHandler)
+	    .addLast(friendHandler)
+	    .addLast(chatRoomHandler)
+	    .addLast(chatHandler);
+	 }
 }

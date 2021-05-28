@@ -2,7 +2,9 @@ package com.withTalk.server.nettyserver.configuration;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,5 +69,10 @@ public class NettyServerConfiguration {
 	@Bean
 	public Map<String, Channel> mappingMember() {
 		return new HashMap<String, Channel>();
+	}
+	
+	@Bean
+	public HashMap<Integer, Set<String>> chatRoomMap() {
+		return new HashMap<Integer, Set<String>>();
 	}
 }

@@ -96,7 +96,7 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 					System.out.println("not found method...");
 			}
 		} else {
-			
+			ctx.fireChannelRead(msg);
 		}
 	}
 	
