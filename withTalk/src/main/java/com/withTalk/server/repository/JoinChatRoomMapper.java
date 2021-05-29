@@ -2,9 +2,12 @@ package com.withTalk.server.repository;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import com.withTalk.server.model.ChatRoom;
 import com.withTalk.server.model.JoinChatRoom;
 
+@Mapper
 public interface JoinChatRoomMapper {
 	//참여 조회
 	public JoinChatRoom select (JoinChatRoom joinChatRoom) throws Exception;

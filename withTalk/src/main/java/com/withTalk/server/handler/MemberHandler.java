@@ -44,6 +44,24 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 			String method = (String) jsonObj.get("method");
 
 			switch (method) {
+				case "select" :
+					member.setId((String)jsonObj.get("id"));
+					member.setName((String)jsonObj.get("name"));
+					member.setPhoneNo((String)jsonObj.get("phoneNo"));
+					
+					resultMember = memberServiceImpl.searchMemberInfo(member);
+					
+					resultJson.put("type", type);
+					resultJson.put("method", method);
+					
+					if (resultMember != null) {
+						resultJson.put("status", "r200");
+					} else {
+						resultJson.put("status", "r400");
+					}
+					ctx.writeAndFlush(resultJson.toJSONString());
+					break;
+					
 				case "findId" :
 					member.setName((String)jsonObj.get("name"));
 					member.setPhoneNo((String)jsonObj.get("phoneNo"));
@@ -53,8 +71,6 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 					resultJson.put("type", "member");
 					resultJson.put("method", method);
 					resultJson.put("id", resultMember.getId());
-					
-					System.out.println("결과 : " + resultJson);
 					
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;

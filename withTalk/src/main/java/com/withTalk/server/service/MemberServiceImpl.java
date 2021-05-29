@@ -61,14 +61,6 @@ public class MemberServiceImpl implements MemberService {
 		return null;
 	}
 
-	public Member findPassword(Member member) throws Exception {
-		return null;
-	}
-
-	public void registerMemberInfo(Member member) throws Exception {
-
-	}
-
 	public List<Member> searchMemberInfoList(Member member) throws Exception {
 		return null;
 	}
@@ -86,4 +78,5 @@ public class MemberServiceImpl implements MemberService {
 	public void modifyMemberInfo(Member member) throws Exception {
 
 	}
+
 }

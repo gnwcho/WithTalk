@@ -50,13 +50,17 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 					friend.setMemberId((String)jsonObj.get("memberId"));
 					friend.setFriendId((String)jsonObj.get("friendId"));
 					
-					System.out.println("insertFriend: " + friend.getFriendId() + "_" + friend.getMemberId());
-					
 					int insertResult = friendServiceImpl.insert(friend);
 					
-					System.out.println("insertFriend 결과 : " + insertResult);
+					resultJson.put("type", type);
+					resultJson.put("method", method);
+					if (insertResult == 0) {
+						resultJson.put("result", "r400");
+					} else {
+						resultJson.put("result", "r200");
+					}
 					
-					ctx.writeAndFlush(insertResult);
+					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
 	
 				case "searchFriend" :
