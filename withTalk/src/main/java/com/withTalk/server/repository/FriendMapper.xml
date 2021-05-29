@@ -22,10 +22,10 @@
 	<sql id="whereSql">
 		<where>
 			<if test="sequenceNo != null and sequenceNo != ''">
-				AND SEQUENCE_NO = BINARY #{sequenceNo}
+				AND SEQUENCE_NO = #{sequenceNo}
 			</if>
 			<if test="memberId != null and memberId != ''">
-				AND MEMBER_ID = BINARY #{memberId}
+				AND MEMBER_ID = #{memberId}
 			</if>
 			<if test="friendId != null and friendId != ''">
 				AND FRIENDID = #{friendId}
@@ -37,7 +37,7 @@
 		parameterType="com.withTalk.server.model.Friend"
 		resultMap="friendResultMap">
 		SELECT *
-		FROM FROM FRIEND
+		FROM FRIEND
 		<include refid="whereSql" />
 		ORDER BY ID
 	</select>

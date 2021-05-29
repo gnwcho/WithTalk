@@ -1,6 +1,7 @@
 package com.withTalk.server.handler;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -12,10 +13,9 @@ import com.withTalk.server.model.Member;
 import com.withTalk.server.service.FriendServiceImpl;
 import com.withTalk.server.service.MemberServiceImpl;
 
-import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.channel.ChannelHandler.Sharable;
 
 @Component
 @Sharable
@@ -79,9 +79,13 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 					break;
 					
 				case "selectAllFriend" :
-					friend.setMemberId((String)jsonObj.get("memberId"));
+					System.out.println("selectAllFriend 들어옴");
+					friend.setFriendId((String)jsonObj.get("id"));
 					
-					ctx.writeAndFlush(resultFriend);
+					List<Friend> friendList = new ArrayList<Friend>();
+					friendList = friendServiceImpl.selectAll(friend);
+					
+					ctx.writeAndFlush(friendList);
 					break;
 					
 				default:
