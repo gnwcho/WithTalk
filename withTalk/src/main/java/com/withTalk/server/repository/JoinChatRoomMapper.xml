@@ -5,7 +5,7 @@
 
 <mapper namespace="com.withTalk.server.repository.JoinChatRoomMapper">
 	<resultMap id="joinChatRoomResultMap"
-		type="com.withTalk.server.model.ChatRoom">
+		type="com.withTalk.server.model.JoinChatRoom">
 		<result column="SEQUENCE_NO" property="sequenceNo" />
 		<result column="CHATROOM_NAME" property="chatRoomName" />
 		<result column="JOIN_TIME" property="joinTime" />
@@ -65,13 +65,8 @@
     	parameterType="com.withTalk.server.model.ChatRoom"
     	resultType="String">
     	SELECT
-    	SEQUENCE_NO
-    	, CHATROOM_NAME
-    	, JOIN_TIME
-    	, CHATROOM_NO
-    	, MEMBER_ID
-    	FROM JOINCHATROOM
-    	WHERE
-    	CHATROOM_NO = #{sequenceNo};
+    	MEMBER_ID
+    	FROM JOIN_CHATROOM
+    	WHERE CHATROOM_NO = #{sequenceNo}
     </select>
 </mapper>
