@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.withTalk.server.repository.MessageMapper">
+	<resultMap id="memberResultMap"
+		type="com.withTalk.server.model.Member">
+		<result column="SEQUENCE_NO" property="sequenceNo" />
+		<result column="SEND_TIME" property="sendTime" />
+		<result column="CONTENTS" property="contents" />
+		<result column="CHATROOM_NO" property="chatRoomNo" />
+		<result column="SENDER_ID" property="senderId" />
+	</resultMap>
+	
+	<sql id="whereSql">
+		<where>
+			<if test="sequenceNo != null and sequenceNo != ''">
+				AND SEQUENCE_NO = #{sequenceNo}
+			</if>
+			<if test="sendTime != null and sendTime != ''">
+				AND SEND_TIME = #{sendTime}
+			</if>
+			<if test="contents != null and contents != ''">
+				AND CONTENTS = #{contents}
+			</if>
+			<if test="chatRoomNo != null and chatRoomNo != ''">
+				AND CHATROOM_NO = #{chatRoomNo}
+			</if>
+			<if test="senderId != null and senderId != ''">
+				AND SENDER_ID = #{senderId}
+			</if>
+		</where>
+	</sql>
+	
+	<insert id="insert"
+		parameterType="com.withTalk.server.model.Message">
+		INSERT INTO MESSAGE
+		VALUES(
+		MESSAGE_SEQ.NEXTVAL
+		, SYSDATE
+		, #{contents}
+		, #{chatRoomNo}
+		, #{senderId}
+		)
+	</insert>
+</mapper>

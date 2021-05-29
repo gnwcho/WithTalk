@@ -1,7 +1,18 @@
 package com.withTalk.server.handler;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.withTalk.server.model.Message;
+import com.withTalk.server.service.ChatServiceImpl;
+
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -9,12 +20,56 @@ import io.netty.channel.SimpleChannelInboundHandler;
 @Sharable
 @Component
 public class ChatHandler  extends SimpleChannelInboundHandler<String> {
-
+	@Autowired
+	JSONParser parser;
+	@Autowired
+	ChatServiceImpl chatServiceImpl;
+	@Autowired
+	private Map<String, Channel> mappingMember;
+	@Autowired
+	public Map<Integer, Set<String>> chatRoomMap;
+	
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, String msg) throws Exception {
-		// TODO Auto-generated method stub
+		JSONObject jsonObj = (JSONObject) parser.parse(msg);
+		String type = (String) jsonObj.get("type");
 		
+		if ("chat".equals(type)) {
+			
+			String method = (String) jsonObj.get("method");
+			
+			Message message = new Message();
+			
+			switch (method) {
+			case "sendChat":
+				message.setContents((String) jsonObj.get("contents"));
+				message.setSenderId((String) jsonObj.get("senderId"));
+				message.setChatRoomNo(Integer.parseInt((String) jsonObj.get("chatRoomNo")));
+				
+				if ("r200".equals(chatServiceImpl.sendMessage(message))) {
+					int chatRoomNo = message.getChatRoomNo();
+					Set<String> joinMember = chatRoomMap.get(chatRoomNo);
+					
+					Iterator<String> it = joinMember.iterator();
+					while (it.hasNext()) {
+						String receiveId = it.next();
+						if (mappingMember.get(receiveId) != null) {
+							mappingMember.get(receiveId).writeAndFlush(message.getSenderId() + " : " + message.getContents());
+						}
+					}
+					
+				} else {
+					ctx.writeAndFlush("don't send Message");
+				}
+				
+			default:
+			}
+			
+		} else {
+			
+		}
 	}
+	
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		ctx.channel().close();
