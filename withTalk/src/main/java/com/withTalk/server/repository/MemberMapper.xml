@@ -29,9 +29,7 @@
 		</where>
 	</sql>
 
-	<select id="select"
-		parameterType="com.withTalk.server.model.Member"
-		resultMap="memberResultMap">
+	<select id="select" parameterType="com.withTalk.server.model.Member" resultMap="memberResultMap">
 		SELECT
 		ID
 		, PASSWORD

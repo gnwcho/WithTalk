@@ -61,15 +61,11 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 						idSet.add(receiverId.get(i));
 					}
 					
-					System.out.println("idSet : " + idSet);
-					
 					chatRoom.setUserCount(receiverId.size());
 					
 					chatRoomServiceImpl.test();
 					
 					no = chatRoomServiceImpl.selectNo();
-					
-					System.out.println("no : " + no);
 					
 					String chatRoomName = (String) jsonObj.get("chatRoomName");
 					

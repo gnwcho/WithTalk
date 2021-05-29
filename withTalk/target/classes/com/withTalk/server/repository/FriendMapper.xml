@@ -8,7 +8,7 @@
 		type="com.withTalk.server.model.Friend">
 		<result column="SEQUENCE_NO" property="sequenceNo" />
 		<result column="MEMBER_ID" property="memberId" />
-		<result column="FRIENDID" property="friendId" />
+		<result column="FRIEND_ID" property="friendId" />
 	</resultMap>
 
 	<resultMap id="memberResultMap"
@@ -39,7 +39,6 @@
 		SELECT *
 		FROM FRIEND
 		<include refid="whereSql" />
-		ORDER BY ID
 	</select>
 
 	<select id="select" parameterType="com.withTalk.server.model.Friend" resultMap="memberResultMap">

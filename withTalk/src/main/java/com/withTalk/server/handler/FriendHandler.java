@@ -3,6 +3,7 @@ package com.withTalk.server.handler;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,21 +72,58 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 					
 					resultJson.put("type", type);
 					resultJson.put("method", method);
-					resultJson.put("id", resultMember.getId());
-					resultJson.put("name", resultMember.getName());
-					resultJson.put("phoneNo", resultMember.getPhoneNo());
+					
+					if (resultMember == null) {
+						resultJson.put("status", "r400");
+						resultJson.put("id", null);
+						resultJson.put("name", null);
+						resultJson.put("phoneNo", null);
+					} else {
+						resultJson.put("status", "r200");
+						resultJson.put("id", resultMember.getId());
+						resultJson.put("name", resultMember.getName());
+						resultJson.put("phoneNo", resultMember.getPhoneNo());
+					}
+					
+					System.out.println("searchFriend 검색 결과 : " + resultJson);
 					
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
 					
 				case "selectAllFriend" :
-					System.out.println("selectAllFriend 들어옴");
-					friend.setFriendId((String)jsonObj.get("id"));
+					friend.setMemberId((String)jsonObj.get("id"));
 					
-					List<Friend> friendList = new ArrayList<Friend>();
-					friendList = friendServiceImpl.selectAll(friend);
+					List<Friend> findIdListFriend = new ArrayList<Friend>();
+					findIdListFriend = friendServiceImpl.selectAll(friend);
 					
-					ctx.writeAndFlush(friendList);
+					JSONObject friendJson = null;
+					
+					JSONArray friendJsonList = new JSONArray();
+					
+					if (findIdListFriend != null) {
+						for (int i = 0; i < findIdListFriend.size(); i++) {
+							friendJson = new JSONObject();
+							member.setId(findIdListFriend.get(i).getFriendId());
+							
+							resultMember = memberServiceImpl.searchMemberInfo(member);
+							
+							friendJson.put("name", resultMember.getName());
+							friendJson.put("id", member.getId());
+							
+							friendJsonList.add(friendJson);
+						}
+					}
+					resultJson.put("type", "friend");
+					resultJson.put("method", "selectAllFriend");
+					
+					if (friendJsonList != null) {
+						resultJson.put("status", "r200");
+						resultJson.put("friendList", friendJsonList);
+					} else {
+						resultJson.put("status", "r400");
+						resultJson.put("friendList", null);
+					}
+					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
 					
 				default:
@@ -95,6 +133,5 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 			ctx.fireChannelRead(msg);
 		}
 	}
-	
 	
 }

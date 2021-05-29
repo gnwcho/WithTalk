@@ -40,4 +40,8 @@ public class Friend implements Serializable{
 	public void setFriendId(String friendId) {
 		this.friendId = friendId;
 	}
+	
+	public String toString() {
+		return "memberId : " + this.getMemberId() + " || friendId : " + this.getFriendId();
+	}
 }

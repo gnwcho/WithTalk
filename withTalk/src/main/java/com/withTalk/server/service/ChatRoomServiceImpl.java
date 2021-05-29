@@ -39,6 +39,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 		chatRoomMap.put(roomId, idSet);
 	}
 
+	//대화방 조회
 	@Override
 	public ChatRoom select(ChatRoom chatRoom) throws Exception {
 		ChatRoom row = chatRoomMapper.select(chatRoom);
