@@ -30,21 +30,22 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 	
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, String msg) throws Exception {
-		System.out.println("------------------------------------------------------------------------" + msg);
-		JSONObject jsonObj = (JSONObject) parser.parse(msg);
-		String type = (String) jsonObj.get("type");
-
-		if ("member".equals(type)) {
-			Member member = new Member();
-			Member resultMember = null;
-
-			JSONObject resultJson = new JSONObject();
-
-			String result = null;
-
-			String method = (String) jsonObj.get("method");
-
-			switch (method) {
+		try {
+			System.out.println("------------------------------------------------------------------------" + msg.length());
+			JSONObject jsonObj = (JSONObject) parser.parse(msg);
+			String type = (String) jsonObj.get("type");
+			
+			if ("member".equals(type)) {
+				Member member = new Member();
+				Member resultMember = null;
+				
+				JSONObject resultJson = new JSONObject();
+				
+				String result = null;
+				
+				String method = (String) jsonObj.get("method");
+				
+				switch (method) {
 				case "findId" :
 					member.setName((String)jsonObj.get("name"));
 					member.setPhoneNo((String)jsonObj.get("phoneNo"));
@@ -74,8 +75,8 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 					member.setId((String) jsonObj.get("id"));
 					member.setName((String) jsonObj.get("name"));
 					member.setPassword((String) jsonObj.get("password"));
-					member.setPhoneNo((String) jsonObj.get("phone_no"));
-	
+					member.setPhoneNo((String) jsonObj.get("phoneNo"));
+					
 					result = memberServiceImpl.signUp(member);
 					
 					if ("r200".equals(result)) {
@@ -86,7 +87,7 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 					resultJson.put("status", result);
 					
 					System.out.println(resultJson.toJSONString());
-	
+					
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
 					
@@ -100,12 +101,21 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 					
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
-	
+					
 				default:
 					System.out.println("not found method...");
+				}
+			} else {
+				ctx.fireChannelRead(msg);
 			}
-		} else {
-			ctx.fireChannelRead(msg);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	  public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+	    cause.printStackTrace();
+	    ctx.close();
+	  }
 }

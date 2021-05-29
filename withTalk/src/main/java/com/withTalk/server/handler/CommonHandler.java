@@ -1,8 +1,6 @@
 package com.withTalk.server.handler;
 
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -12,11 +10,10 @@ import org.springframework.stereotype.Component;
 import com.withTalk.server.model.Member;
 import com.withTalk.server.service.MemberServiceImpl;
 
-import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.channel.ChannelHandler.Sharable;
 
 @Component
 @Sharable
@@ -31,6 +28,7 @@ public class CommonHandler extends SimpleChannelInboundHandler<String> {
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, String msg) throws Exception {
 		try {
+			System.out.println("------------------------------------------------------------------------" + msg);
 			JSONObject jsonObj = (JSONObject) parser.parse(msg);
 			String type = (String) jsonObj.get("type");
 			
@@ -61,6 +59,8 @@ public class CommonHandler extends SimpleChannelInboundHandler<String> {
 					
 					resultJson.put("method", method);
 					resultJson.put("status", result);
+					
+					System.out.println(resultJson.toJSONString());
 					
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
