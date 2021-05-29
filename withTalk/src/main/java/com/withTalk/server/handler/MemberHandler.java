@@ -1,9 +1,6 @@
 package com.withTalk.server.handler;
 
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +13,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.channel.ChannelHandler.Sharable;
 
 @Component
 @Sharable
@@ -30,21 +26,26 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 	
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, String msg) throws Exception {
-		System.out.println("------------------------------------------------------------------------" + msg);
-		JSONObject jsonObj = (JSONObject) parser.parse(msg);
-		String type = (String) jsonObj.get("type");
-
-		if ("member".equals(type)) {
-			Member member = new Member();
-			Member resultMember = null;
-
-			JSONObject resultJson = new JSONObject();
-
-			String result = null;
-
-			String method = (String) jsonObj.get("method");
-
-			switch (method) {
+		try {
+			if (msg.length() == 0) {
+				msg = msg + "{\"type\":\"접속 해제\"}";
+				System.out.println(msg);
+			}
+		
+			JSONObject jsonObj = (JSONObject) parser.parse(msg);
+			String type = (String) jsonObj.get("type");
+			
+			if ("member".equals(type)) {
+				Member member = new Member();
+				Member resultMember = null;
+				
+				JSONObject resultJson = new JSONObject();
+				
+				String result = null;
+				
+				String method = (String) jsonObj.get("method");
+				
+				switch (method) {
 				case "auth" :
 					member.setId((String)jsonObj.get("id"));
 					member.setName((String)jsonObj.get("name"));
@@ -99,7 +100,7 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 					member.setName((String) jsonObj.get("name"));
 					member.setPassword((String) jsonObj.get("password"));
 					member.setPhoneNo((String) jsonObj.get("phoneNo"));
-	
+					
 					result = memberServiceImpl.signUp(member);
 					
 					if ("r200".equals(result)) {
@@ -110,7 +111,7 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 					resultJson.put("status", result);
 					
 					System.out.println(resultJson.toJSONString());
-	
+					
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
 					
@@ -124,7 +125,7 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 					
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
-	
+
 				case "resetPassword" :
 					System.out.println("들어오냐?");
 					member.setId((String) jsonObj.get("id"));
@@ -151,9 +152,18 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 					
 				default:
 					System.out.println("not found method...");
+				}
+			} else {
+				ctx.fireChannelRead(msg);
 			}
-		} else {
-			ctx.fireChannelRead(msg);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	  public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+	    cause.printStackTrace();
+	    ctx.close();
+	  }
 }
