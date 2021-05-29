@@ -67,4 +67,10 @@
 		, #{phoneNo}
 		)
 	</insert>
+	
+	<update id="update" parameterType="com.withTalk.server.model.Member">
+		UPDATE MEMBER 
+		SET PASSWORD= #{password} 
+		WHERE ID= #{id}
+	</update>
 </mapper>

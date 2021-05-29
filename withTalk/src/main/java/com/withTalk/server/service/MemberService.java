@@ -22,6 +22,9 @@ public interface MemberService {
 
 	// 사용자 정보 조회
 	public Member searchMemberInfo(Member member) throws Exception;
+	
+	// 사용자 정보 수정
+	public int updateMemberInfo(Member member) throws Exception;
 
 }
 

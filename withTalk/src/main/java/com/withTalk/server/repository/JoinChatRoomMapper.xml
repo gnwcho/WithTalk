@@ -5,7 +5,7 @@
 
 <mapper namespace="com.withTalk.server.repository.JoinChatRoomMapper">
 	<resultMap id="joinChatRoomResultMap"
-		type="com.withTalk.server.model.joinChatRoom">
+		type="com.withTalk.server.model.JoinChatRoom">
 		<result column="SEQUENCE_NO" property="sequenceNo" />
 		<result column="CHATROOM_NAME" property="chatRoomName" />
 		<result column="JOIN_TIME" property="joinTime" />
@@ -32,8 +32,9 @@
 			</if>
 		</where>
 	</sql>
-	
-	<insert id="insert" parameterType="com.withTalk.server.model.JoinChatRoom">
+
+	<insert id="insert"
+		parameterType="com.withTalk.server.model.JoinChatRoom">
 		INSERT INTO JOINCHATROOM
 		VALUES (
 		JOINCHATROOM_SEQ.NEXTVAL
@@ -43,34 +44,30 @@
 		, #{memberId}
 		)
 	</insert>
-	
-	<select id="select" parameterType="com.withTalk.server.model.JoinChatRoom" resultMap="joinChatRoomResultMap">
-        SELECT *
-        FROM JOINCHATROOM
-        <include refid="whereSql" />
-    </select>
-    
-    <select id="selectAll"
-    	resultMap="joinChatRoomResultMap">
-    	SELECT
-    	SEQUENCE_NO
-    	, CHATROOM_NAME
-    	, JOIN_TIME
-    	, CHATROOM_NO
-    	, MEMBER_ID
-    	FROM JOINCHATROOM
-    </select>
-    
-    <select id="selectMemberByRoomId" parameterType="com.withTalk.server.model.ChatRoom"
-    	resultType="String">
-    	SELECT
-    	SEQUENCE_NO
-    	, CHATROOM_NAME
-    	, JOIN_TIME
-    	, CHATROOM_NO
-    	, MEMBER_ID
-    	FROM JOINCHATROOM
-    	WHERE
-    	CHATROOM_NO = #{sequenceNo};
-    </select>
+
+	<select id="select"
+		parameterType="com.withTalk.server.model.JoinChatRoom"
+		resultMap="joinChatRoomResultMap">
+		SELECT *
+		FROM JOINCHATROOM
+		<include refid="whereSql" />
+	</select>
+
+	<select id="selectAll" resultMap="joinChatRoomResultMap">
+		SELECT
+		SEQUENCE_NO
+		, CHATROOM_NAME
+		, JOIN_TIME
+		, CHATROOM_NO
+		, MEMBER_ID
+		FROM JOINCHATROOM
+	</select>
+
+	<select id="selectMemberByRoomId"
+		parameterType="com.withTalk.server.model.ChatRoom" resultType="String">
+		SELECT
+		MEMBER_ID
+		FROM JOIN_CHATROOM
+		WHERE CHATROOM_NO = #{sequenceNo}
+	</select>
 </mapper>

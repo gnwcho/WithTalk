@@ -65,6 +65,7 @@ public class MemberServiceImpl implements MemberService {
 		return null;
 	}
 
+	//사용자 정보 조회
 	public Member searchMemberInfo(Member member) throws Exception {
 		Member row = memberMapper.select(member);
 
@@ -77,6 +78,16 @@ public class MemberServiceImpl implements MemberService {
 
 	public void modifyMemberInfo(Member member) throws Exception {
 
+	}
+
+	//사용자 정보 수정
+	@Override
+	public int updateMemberInfo(Member member) throws Exception {
+		System.out.println("serviceImpl 들어오냐?");
+		memberMapper.update(member);
+		System.out.println("처리함 ? ");
+		
+		return 1;
 	}
 
 }

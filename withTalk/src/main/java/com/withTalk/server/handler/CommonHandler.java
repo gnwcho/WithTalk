@@ -75,4 +75,5 @@ public class CommonHandler extends SimpleChannelInboundHandler<String> {
 			e.printStackTrace();
 		}
 	}
+	
 }

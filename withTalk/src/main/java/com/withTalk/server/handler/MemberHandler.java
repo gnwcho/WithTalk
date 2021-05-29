@@ -30,6 +30,7 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 	
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, String msg) throws Exception {
+		System.out.println("------------------------------------------------------------------------" + msg);
 		JSONObject jsonObj = (JSONObject) parser.parse(msg);
 		String type = (String) jsonObj.get("type");
 
@@ -44,7 +45,7 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 			String method = (String) jsonObj.get("method");
 
 			switch (method) {
-				case "select" :
+				case "auth" :
 					member.setId((String)jsonObj.get("id"));
 					member.setName((String)jsonObj.get("name"));
 					member.setPhoneNo((String)jsonObj.get("phoneNo"));
@@ -59,6 +60,7 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 					} else {
 						resultJson.put("status", "r400");
 					}
+					
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
 					
@@ -70,7 +72,14 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 					
 					resultJson.put("type", "member");
 					resultJson.put("method", method);
-					resultJson.put("id", resultMember.getId());
+					
+					if (resultMember != null) {
+						resultJson.put("id", resultMember.getId());
+						resultJson.put("status", "r200");
+					} else {
+						resultJson.put("id", null);
+						resultJson.put("status", "r400");
+					}
 					
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
@@ -89,7 +98,7 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 					member.setId((String) jsonObj.get("id"));
 					member.setName((String) jsonObj.get("name"));
 					member.setPassword((String) jsonObj.get("password"));
-					member.setPhoneNo((String) jsonObj.get("phone_no"));
+					member.setPhoneNo((String) jsonObj.get("phoneNo"));
 	
 					result = memberServiceImpl.signUp(member);
 					
@@ -116,6 +125,30 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
 	
+				case "resetPassword" :
+					System.out.println("들어오냐?");
+					member.setId((String) jsonObj.get("id"));
+					member.setPassword((String) jsonObj.get("newPassword"));
+					
+					System.out.println("멤버 : " + member);
+					
+					int resetResult = memberServiceImpl.updateMemberInfo(member);
+					System.out.println("resetResult = " + resetResult);
+					
+					resultJson.put("method", method);
+					resultJson.put("status", result);
+					
+					if (resetResult == 0) {
+						resultJson.put("status", "r400");
+					} else {
+						resultJson.put("status", "r200");
+					}
+					
+					System.out.println("resultJson : " + resultJson.toJSONString());
+					
+					ctx.writeAndFlush(resultJson.toJSONString());
+					break;
+					
 				default:
 					System.out.println("not found method...");
 			}
