@@ -51,6 +51,7 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 			int no = 0;
 
 			switch (method) {
+				// 대화방 생성
 				case "create":
 					List<String> receiverId = (List<String>) jsonObj.get("receiverId");
 					
@@ -92,7 +93,8 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
 					
-				case "search" :
+				//대화방 조회
+				case "select" :
 					no = (int) jsonObj.get("roomId");
 					chatRoom.setSequenceNo(no);
 					
@@ -117,6 +119,14 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 					
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
+				
+				//대화방 검색
+				case "search" : ////////////////////////////////////
+					//To DO
+					
+				//대화방 삭제
+				case "delete" :
+					
 			default:
 				System.out.println("not found method...");
 			}

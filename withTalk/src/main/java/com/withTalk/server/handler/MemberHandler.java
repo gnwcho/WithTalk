@@ -46,6 +46,7 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 				String method = (String) jsonObj.get("method");
 				
 				switch (method) {
+				//사용자 인증 (비밀번호 재설정 전)
 				case "auth" :
 					member.setId((String)jsonObj.get("id"));
 					member.setName((String)jsonObj.get("name"));
@@ -65,6 +66,7 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
 					
+				//아이디 찾기
 				case "findId" :
 					member.setName((String)jsonObj.get("name"));
 					member.setPhoneNo((String)jsonObj.get("phoneNo"));
@@ -85,15 +87,7 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
 					
-				case "findPassword" :
-					member.setId((String)jsonObj.get("id"));
-					member.setName((String)jsonObj.get("name"));
-					
-					resultMember = memberServiceImpl.searchMemberInfo(member);
-					
-					ctx.writeAndFlush(resultMember.getPassword());
-					break;	
-					
+				// 회원가입	
 				case "signUp":
 					String id = (String) jsonObj.get("id");
 					member.setId((String) jsonObj.get("id"));
@@ -115,6 +109,7 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
 					
+				// 아이디 확인	
 				case "checkId":
 					member.setId((String) jsonObj.get("id"));
 					
@@ -126,6 +121,7 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
 
+				// 비밀번호 재설정
 				case "resetPassword" :
 					System.out.println("들어오냐?");
 					member.setId((String) jsonObj.get("id"));
