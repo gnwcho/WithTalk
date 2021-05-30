@@ -8,7 +8,7 @@ public interface JoinChatRoomService {
 	//참여 조회
 	public List<JoinChatRoom> select (JoinChatRoom joinChatRoom) throws Exception;
 	//참여 등록
-	public void insert (JoinChatRoom joinChatRoom) throws Exception;
+	public String insert (JoinChatRoom joinChatRoom, List<String> receiverId) throws Exception;
 	//참여 삭제
 	public void delete (JoinChatRoom joinChatRoom) throws Exception;
 	

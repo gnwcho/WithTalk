@@ -19,14 +19,32 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 	@Autowired
 	public ChatRoomMapper chatRoomMapper;
 	@Autowired
-	public Map<String, Channel> idMap;
+	public Map<String, Channel> mappingMapper;
 	@Autowired
 	public Map<Integer, Set<String>> chatRoomMap;
 	
 	//대화방 생성
 	@Override
-	public int insert(ChatRoom chatRoom) throws Exception{
-		int result = chatRoomMapper.insert(chatRoom);
+	public String insert(ChatRoom chatRoom, List<String> receiverId) throws Exception{
+		chatRoom.setUserCount(receiverId.size());
+		int insertResult = chatRoomMapper.insert(chatRoom);
+		
+		String result = null;
+				
+		if (insertResult == 1) {
+			Set<String> receiverIdSet = new HashSet<String>();
+
+			for (String id : receiverId) {
+				receiverIdSet.add(id);
+			}
+			
+			int no = this.selectNo();
+			chatRoomMap.put(no + 1, receiverIdSet);
+			
+			result = "r200";
+		} else {
+			result = "r400";
+		}
 		
 		return result;
 	}

@@ -35,7 +35,7 @@ public class NettyServer {
 	@Autowired
 	private Map<String, Channel> mappingMember;
 	@Autowired
-	public Map<Integer, Set<String>> chatRoomMap;
+	private Map<Integer, Set<String>> chatRoomMap;
 
 	private ChannelFuture cf;
 
