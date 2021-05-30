@@ -94,7 +94,7 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 					break;
 					
 				//대화방 조회
-				case "select" :
+				case "select" : // --> no int로 캐스팅했는데 넘어올 때 Long으로 넘어옴 (SocketTest에서만 그런건지 확인)
 					no = (int) jsonObj.get("roomId");
 					chatRoom.setSequenceNo(no);
 					

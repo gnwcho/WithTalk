@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.withTalk.server.model.Member;
+import com.withTalk.server.service.CommonServiceImpl;
 import com.withTalk.server.service.MemberServiceImpl;
 
 import io.netty.channel.Channel;
@@ -22,6 +23,8 @@ public class CommonHandler extends SimpleChannelInboundHandler<String> {
 	private JSONParser parser;
 	@Autowired
 	private MemberServiceImpl memberServiceImpl;
+	@Autowired
+	private CommonServiceImpl commonServiceImpl;
 	@Autowired
 	private Map<String, Channel> mappingMember;
 	
@@ -40,23 +43,15 @@ public class CommonHandler extends SimpleChannelInboundHandler<String> {
 				String result = null;
 				
 				String method = (String) jsonObj.get("method");
-				String id = null;
 				
 				switch (method) {
 				case "login":
-					id = (String) jsonObj.get("id");
-					
-					System.out.println("id : " + id);
-					
 					member.setId((String) jsonObj.get("id"));
 					member.setPassword((String) jsonObj.get("password"));
 					
-					result = memberServiceImpl.login(member);
+					result = commonServiceImpl.login(member, ctx);
 					
-					if ("r200".equals(result)) {
-						mappingMember.put(id, ctx.channel());
-					}
-					
+					resultJson.put("type", type);
 					resultJson.put("method", method);
 					resultJson.put("status", result);
 					
@@ -66,9 +61,17 @@ public class CommonHandler extends SimpleChannelInboundHandler<String> {
 					break;
 					
 				//로그아웃
-				case "logout" :
-					/////////////////////////////////////////TO DO
+				case "logout":
+					member.setId((String) jsonObj.get("senderId"));
 					
+					result = commonServiceImpl.logout(member, ctx);
+					
+					resultJson.put("type", type);
+					resultJson.put("method", method);
+					resultJson.put("status", result);
+					
+					ctx.writeAndFlush(resultJson.toJSONString());
+					break;
 				default:
 					System.out.println("not found method...");
 				}

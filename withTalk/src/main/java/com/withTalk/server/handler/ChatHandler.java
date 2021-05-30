@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.withTalk.server.model.Message;
 import com.withTalk.server.service.ChatServiceImpl;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -57,7 +58,6 @@ public class ChatHandler  extends SimpleChannelInboundHandler<String> {
 							mappingMember.get(receiveId).writeAndFlush(message.getSenderId() + " : " + message.getContents());
 						}
 					}
-					
 				} else {
 					ctx.writeAndFlush("don't send Message");
 				}
