@@ -33,6 +33,9 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 		JSONObject jsonObj = (JSONObject) parser.parse(msg);
 		String type = (String) jsonObj.get("type");
 		
+		System.out.println("들어온 메세지 : " + jsonObj);
+		System.out.println("----------------------------------------------");
+		
 		if ("friend".equals(type)) {
 			Member member = new Member();
 			Member resultMember = null;
@@ -57,9 +60,9 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 					resultJson.put("type", type);
 					resultJson.put("method", method);
 					if (insertResult == 0) {
-						resultJson.put("result", "r400");
+						resultJson.put("status", "r400");
 					} else {
-						resultJson.put("result", "r200");
+						resultJson.put("status", "r200");
 					}
 					
 					ctx.writeAndFlush(resultJson.toJSONString());
@@ -67,6 +70,7 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 	
 				//친구 검색
 				case "searchFriend" :
+					System.out.println("selectFriend 들어옴=============================================== " );
 					member.setPhoneNo((String)jsonObj.get("phoneNo"));
 					
 					resultMember = friendServiceImpl.search(member);
@@ -94,6 +98,7 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 					
 				//친구 목록 조회
 				case "selectAllFriend" :
+					System.out.println("selectAllFriend 들어옴=============================================== " );
 					friend.setMemberId((String)jsonObj.get("id"));
 					
 					List<Friend> findIdListFriend = new ArrayList<Friend>();
@@ -119,6 +124,8 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 					resultJson.put("type", "friend");
 					resultJson.put("method", "selectAllFriend");
 					
+					System.out.println("friendJsonList : " + friendJsonList);
+					
 					if (friendJsonList != null) {
 						resultJson.put("status", "r200");
 						resultJson.put("friendList", friendJsonList);
@@ -131,15 +138,15 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 					
 				//친구 상세 조회
 				case "selectFriend" :
-					member.setName((String) jsonObj.get("name"));
-					List<Member> resultMemberList = new ArrayList<Member>();
-					List<Friend> resultFriendList = new ArrayList<Friend>();
-					
-					resultMemberList = memberServiceImpl.searchMemberInfoList(member);
-					
-					for (int i = 0; i < resultMemberList.size(); i++) {
-						friend.setMemberId(resultMemberList.get(i).);
-					}
+//					member.setName((String) jsonObj.get("name"));
+//					List<Member> resultMemberList = new ArrayList<Member>();
+//					List<Friend> resultFriendList = new ArrayList<Friend>();
+//					
+//					resultMemberList = memberServiceImpl.searchMemberInfoList(member);
+//					
+//					for (int i = 0; i < resultMemberList.size(); i++) {
+//						friend.setMemberId(resultMemberList.get(i).);
+//					}
 					
 					//TO DO
 					

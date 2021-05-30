@@ -38,9 +38,10 @@ public class FriendServiceImpl implements FriendService{
 	@Override
 	public Member search(Member member) {
 		try {
+			System.out.println("search 들어옴=============================================== " );
 			System.out.println("넘어온 Member : " + member);
 			Member row = memberMapper.select(member);
-			System.out.println("selectMyName 결과 : " + row);
+			System.out.println("selectByName 결과 : " + row);
 			
 			return row;
 		} catch (Exception e) {
