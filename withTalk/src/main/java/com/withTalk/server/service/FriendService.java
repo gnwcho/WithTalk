@@ -14,4 +14,6 @@ public interface FriendService {
 	public List<Friend> selectAll(Friend friend);
 	//친구 삭제
 	public int delete(Friend friend);
+	//등록된 친구 검색
+	public List<Member> selectByName(Member member);
 }

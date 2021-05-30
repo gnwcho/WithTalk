@@ -78,4 +78,18 @@ public class FriendServiceImpl implements FriendService{
 			return 0;
 		}
 	}
+	
+	@Override
+	public List<Member> selectByName(Member member) {
+		try {
+			System.out.println("FriendServiceImpl 클래스 selectByName 메소드 들어옴");
+			System.out.println("member ID : " + member.getId() + "|| member Name : " + member.getName());
+			List<Member> rows = friendMapper.selectByName(member);
+			
+			return rows;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

@@ -36,6 +36,9 @@ public class NettyServer {
 	private Map<String, Channel> mappingMember;
 	@Autowired
 	public Map<Integer, Set<String>> chatRoomMap;
+	
+	public static final String SUCCESS = "r200";
+	public static final String FAIL = "r400";
 
 	private ChannelFuture cf;
 

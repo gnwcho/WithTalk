@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.withTalk.server.model.Friend;
 import com.withTalk.server.model.Member;
+import com.withTalk.server.nettyserver.NettyServer;
 import com.withTalk.server.service.FriendServiceImpl;
 import com.withTalk.server.service.MemberServiceImpl;
 
@@ -65,11 +66,13 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 						resultJson.put("status", "r200");
 					}
 					
+					System.out.println("insertFriend 결과 : " + resultJson);
+					
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
 	
 				//친구 검색
-				case "searchFriend" :
+				case "search" :
 					System.out.println("selectFriend 들어옴=============================================== " );
 					member.setPhoneNo((String)jsonObj.get("phoneNo"));
 					
@@ -121,7 +124,7 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 							friendJsonList.add(friendJson);
 						}
 					}
-					resultJson.put("type", "friend");
+					resultJson.put("type", type);
 					resultJson.put("method", "selectAllFriend");
 					
 					System.out.println("friendJsonList : " + friendJsonList);
@@ -136,23 +139,60 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
 					
-				//친구 상세 조회
-				case "selectFriend" :
-//					member.setName((String) jsonObj.get("name"));
-//					List<Member> resultMemberList = new ArrayList<Member>();
-//					List<Friend> resultFriendList = new ArrayList<Friend>();
-//					
-//					resultMemberList = memberServiceImpl.searchMemberInfoList(member);
-//					
-//					for (int i = 0; i < resultMemberList.size(); i++) {
-//						friend.setMemberId(resultMemberList.get(i).);
-//					}
+				//등록된 친구 검색
+				case "searchRegistFriend" :
+					System.out.println("searchRegistFriend 들어온 요청 : " + jsonObj);
+					member.setName((String) jsonObj.get("searchName"));
+					member.setId((String) jsonObj.get("senderId"));
 					
-					//TO DO
+					List<Member> resultMemberList = friendServiceImpl.selectByName(member);
+					
+					resultJson.put("type", type);
+					resultJson.put("method", "searchRegistFriend");
+					
+					if (resultMemberList != null) {
+						JSONArray registFriendList = new JSONArray();
+						JSONObject registFriend = null;
+						
+						for (int i = 0; i < resultMemberList.size(); i++) {
+							registFriend = new JSONObject();
+							
+							registFriend.put("id", resultMemberList.get(i).getId());
+							registFriend.put("name", resultMemberList.get(i).getName());
+							
+							registFriendList.add(registFriend);
+						}
+						
+						resultJson.put("status", NettyServer.SUCCESS);
+						resultJson.put("registFriendList", registFriendList);
+					} else {
+						resultJson.put("status", NettyServer.FAIL);
+						resultJson.put("registFriendList", null);
+					}
+					
+					System.out.println("searchRegistFriend 결과 : " + resultJson);
+					ctx.writeAndFlush(resultJson.toJSONString());
+					break;
 					
 				//친구 삭제
 				case "delete" :
+					friend.setFriendId((String)jsonObj.get("id"));
 					
+					int deleteResult = friendServiceImpl.delete(friend);
+					
+					resultJson.put("type", type);
+					resultJson.put("method", method);
+					
+					if (deleteResult == 0) {
+						resultJson.put("status", "r400");
+					} else {
+						resultJson.put("status", "r200");
+					}
+					
+					System.out.println("deleteFriend 결과 : " + resultJson);
+					
+					ctx.writeAndFlush(resultJson.toJSONString());
+					break;
 				default:
 					System.out.println("not found method...");
 			}

@@ -18,4 +18,6 @@ public interface FriendMapper {
 	public int delete(Friend friend) throws Exception;
 	
 	public int plusSeq() throws Exception;
+	
+	public List<Member> selectByName(Member member) throws Exception;
 }

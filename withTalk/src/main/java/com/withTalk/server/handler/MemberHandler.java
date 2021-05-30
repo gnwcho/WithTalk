@@ -31,7 +31,7 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 				msg = msg + "{\"type\":\"접속 해제\"}";
 				System.out.println(msg);
 			}
-		
+			System.out.println("들어온 메세지 :" + msg);
 			JSONObject jsonObj = (JSONObject) parser.parse(msg);
 			String type = (String) jsonObj.get("type");
 			
