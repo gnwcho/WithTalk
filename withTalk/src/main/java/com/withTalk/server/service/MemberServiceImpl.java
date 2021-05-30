@@ -29,20 +29,6 @@ public class MemberServiceImpl implements MemberService {
 	}
 	
 	@Override
-	public String login(Member member) throws Exception {
-		String result = null;
-		
-		//로그인 성공
-		if (memberMapper.select(member) != null) {
-			result = "r200";
-		} else {
-			result = "r400";
-		}
-		
-		return result;
-	}
-
-	@Override
 	public String checkId(Member member) throws Exception {
 		String result = null;
 		
