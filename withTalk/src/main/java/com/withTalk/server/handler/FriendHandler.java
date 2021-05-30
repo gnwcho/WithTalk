@@ -47,6 +47,7 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 			String method = (String) jsonObj.get("method");
 
 			switch (method) {
+				//친구 등록
 				case "insertFriend" :
 					friend.setMemberId((String)jsonObj.get("memberId"));
 					friend.setFriendId((String)jsonObj.get("friendId"));
@@ -64,6 +65,7 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
 	
+				//친구 검색
 				case "searchFriend" :
 					member.setPhoneNo((String)jsonObj.get("phoneNo"));
 					
@@ -90,6 +92,7 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
 					
+				//친구 목록 조회
 				case "selectAllFriend" :
 					friend.setMemberId((String)jsonObj.get("id"));
 					
@@ -125,6 +128,23 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 					}
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
+					
+				//친구 상세 조회
+				/*case "selectFriend" :
+					member.setName((String) jsonObj.get("name"));
+					List<Member> resultMemberList = new ArrayList<Member>();
+					List<Friend> resultFriendList = new ArrayList<Friend>();
+					
+					resultMemberList = memberServiceImpl.searchMemberInfoList(member);
+					
+					for (int i = 0; i < resultMemberList.size(); i++) {
+						friend.setMemberId(resultMemberList.get(i).);
+					}
+					
+					//TO DO
+					*/
+				//친구 삭제
+				case "delete" :
 					
 				default:
 					System.out.println("not found method...");

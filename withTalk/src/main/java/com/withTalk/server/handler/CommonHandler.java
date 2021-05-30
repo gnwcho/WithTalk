@@ -48,11 +48,12 @@ public class CommonHandler extends SimpleChannelInboundHandler<String> {
 				case "login":
 					id = (String) jsonObj.get("id");
 					
+					System.out.println("id : " + id);
+					
 					member.setId((String) jsonObj.get("id"));
 					member.setPassword((String) jsonObj.get("password"));
 					
 					result = memberServiceImpl.login(member);
-					System.out.println(result);
 					
 					if ("r200".equals(result)) {
 						mappingMember.put(id, ctx.channel());
@@ -65,6 +66,10 @@ public class CommonHandler extends SimpleChannelInboundHandler<String> {
 					
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
+					
+				//로그아웃
+				case "logout" :
+					/////////////////////////////////////////TO DO
 					
 				default:
 					System.out.println("not found method...");
