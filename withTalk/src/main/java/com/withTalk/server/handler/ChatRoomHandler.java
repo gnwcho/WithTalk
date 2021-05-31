@@ -104,10 +104,27 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 			// 대화방 검색
 			case "search": ////////////////////////////////////
 				// To DO
-
-				// 대화방 삭제
-			case "delete":
-
+				break;
+			// 대화방 나가기
+			case "exit":
+				int roomNo = Integer.parseInt(String.valueOf(jsonObj.get("chatRoomNo")));
+				joinChatRoom.setMemberId((String) jsonObj.get("senderId"));
+				joinChatRoom.setChatRoomNo(roomNo);
+				
+				status = joinChatRoomServiceImpl.delete(joinChatRoom);
+				
+				if ("r200".equals(status)) {
+					chatRoom.setSequenceNo(roomNo);
+					chatRoomServiceImpl.updateUserCount(chatRoom);
+					
+				}
+				
+				resultJson.put("type", type);
+				resultJson.put("method", method);
+				resultJson.put("status", status);
+				
+				ctx.writeAndFlush(resultJson.toJSONString());
+				break;
 			default:
 				System.out.println("not found method...");
 			}

@@ -49,4 +49,16 @@
 		SELECT CHATROOM_SEQ.NEXTVAL
 		FROM DUAL
 	</select>
+	
+	<update id="updateCount"
+		parameterType="com.withTalk.server.model.ChatRoom">
+		UPDATE CHATROOM
+		SET
+		USER_COUNT=(
+		SELECT COUNT(*)
+		FROM JOIN_CHATROOM
+		WHERE CHATROOM_NO=#{sequenceNo}
+		)
+		WHERE SEQUENCE_NO=#{sequenceNo}
+	</update>
 </mapper>

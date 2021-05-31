@@ -87,4 +87,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 		return chatRoomMapper.test();
 		
 	}
+	
+	//대화방 인원 변경
+	@Override
+	public void updateUserCount(ChatRoom chatRoom) throws Exception {
+		chatRoomMapper.updateCount(chatRoom);
+	}
 }

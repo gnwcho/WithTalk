@@ -1,6 +1,8 @@
 package com.withTalk.server.service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,8 @@ import com.withTalk.server.repository.JoinChatRoomMapper;
 public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 	@Autowired
 	JoinChatRoomMapper joinChatRoomMapper;
+	@Autowired
+	public Map<Integer, Set<String>> chatRoomMap;
 	
 	//참여 조회
 	@Override
@@ -36,9 +40,19 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 
 	//참여 삭제
 	@Override
-	public void delete(JoinChatRoom joinChatRoom) throws Exception {
-		// TODO Auto-generated method stub
-
+	public String delete(JoinChatRoom joinChatRoom) throws Exception {
+		int result = joinChatRoomMapper.delete(joinChatRoom);
+		String status = null;
+				
+		if (result == 1) {
+			Set<String> joinMember = chatRoomMap.get(joinChatRoom.getChatRoomNo());
+			joinMember.remove(joinChatRoom.getMemberId());
+			
+			status = "r200";
+		} else {
+			status = "r400";
+		}
+		
+		return status;
 	}
-
 }

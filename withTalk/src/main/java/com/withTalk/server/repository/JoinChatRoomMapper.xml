@@ -3,7 +3,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.withTalk.server.repository.JoinChatRoomMapper">
+<mapper
+	namespace="com.withTalk.server.repository.JoinChatRoomMapper">
 	<resultMap id="joinChatRoomResultMap"
 		type="com.withTalk.server.model.JoinChatRoom">
 		<result column="SEQUENCE_NO" property="sequenceNo" />
@@ -41,15 +42,22 @@
 		, #{chatRoomName}
 		, SYSDATE
 		, #{chatRoomNo}
-		, #{memberId}
+		,
+		#{memberId}
 		)
 	</insert>
-	
+
 	<select id="selectMemberByRoomId"
-      parameterType="com.withTalk.server.model.ChatRoom" resultType="String">
-      SELECT
-      MEMBER_ID
-      FROM JOIN_CHATROOM
-      WHERE CHATROOM_NO = #{sequenceNo}
-   </select>
+		parameterType="com.withTalk.server.model.ChatRoom" resultType="String">
+		SELECT
+		MEMBER_ID
+		FROM JOIN_CHATROOM
+		WHERE CHATROOM_NO = #{sequenceNo}
+	</select>
+
+	<delete id="delete"
+		parameterType="com.withTalk.server.model.JoinChatRoom">
+		DELETE FROM JOIN_CHATROOM
+		WHERE MEMBER_ID = #{memberId} AND CHATROOM_NO = #{chatRoomNo}
+	</delete>
 </mapper>

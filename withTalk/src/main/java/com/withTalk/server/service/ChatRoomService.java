@@ -19,4 +19,6 @@ public interface ChatRoomService {
 		public int delete(ChatRoom chatRoom) throws Exception;
 		//대화방 시퀀스 생성
 		public int test() throws Exception;
+		
+		public int updateUserCount(ChatRoom chatRoom) throws Exception;
 }

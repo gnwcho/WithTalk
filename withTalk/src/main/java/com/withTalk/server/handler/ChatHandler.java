@@ -45,7 +45,8 @@ public class ChatHandler  extends SimpleChannelInboundHandler<String> {
 			case "sendChat":
 				message.setContents((String) jsonObj.get("contents"));
 				message.setSenderId((String) jsonObj.get("senderId"));
-				message.setChatRoomNo(Integer.parseInt((String) jsonObj.get("chatRoomNo")));
+				message.setChatRoomNo(Integer.parseInt(String.valueOf(jsonObj.get("chatRoomNo"))));
+				System.out.println(message.getChatRoomNo());
 				
 				if ("r200".equals(chatServiceImpl.sendMessage(message))) {
 					int chatRoomNo = message.getChatRoomNo();
@@ -62,6 +63,7 @@ public class ChatHandler  extends SimpleChannelInboundHandler<String> {
 					ctx.writeAndFlush("don't send Message");
 				}
 				
+				break;
 			default:
 			}
 			

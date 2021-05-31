@@ -14,7 +14,7 @@ public interface JoinChatRoomMapper {
 	//참여 삽입
 	public int insert (JoinChatRoom joinChatRoom) throws Exception;
 	//참여 삭제
-	//public void delete (JoinChatRoom joinChatRoom) throws Exception;
+	public int delete (JoinChatRoom joinChatRoom) throws Exception;
 	//방 id에 속한 회원 찾기
 	public List<String> selectMemberByRoomId(ChatRoom chatRoom) throws Exception;
 }

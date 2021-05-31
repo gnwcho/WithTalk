@@ -34,9 +34,6 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 		JSONObject jsonObj = (JSONObject) parser.parse(msg);
 		String type = (String) jsonObj.get("type");
 		
-		System.out.println("들어온 메세지 : " + jsonObj);
-		System.out.println("----------------------------------------------");
-		
 		if ("friend".equals(type)) {
 			Member member = new Member();
 			Member resultMember = null;
