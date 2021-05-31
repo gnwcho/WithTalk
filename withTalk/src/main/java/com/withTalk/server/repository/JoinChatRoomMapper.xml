@@ -16,16 +16,16 @@
 	<sql id="whereSql">
 		<where>
 			<if test="sequenceNo != null and sequenceNo != ''">
-				AND SEQUENCE_NO = BINARY #{sequenceNo}
+				AND SEQUENCE_NO = #{sequenceNo}
 			</if>
 			<if test="chatRoomName != null and chatRoomName != ''">
-				AND CHATROOM_NAME = BINARY #{chatRoomName}
+				AND CHATROOM_NAME = #{chatRoomName}
 			</if>
 			<if test="joinTime != null and joinTime != ''">
-				AND JOIN_TIME = BINARY #{joinTime}
+				AND JOIN_TIME = #{joinTime}
 			</if>
 			<if test="chatRoomNo != null and chatRoomNo != ''">
-				AND CHATROOM_NO = BINARY #{chatRoomNo}
+				AND CHATROOM_NO = #{chatRoomNo}
 			</if>
 			<if test="memberId != null and memberId != ''">
 				AND MEMBER_ID = #{memberId}
@@ -44,6 +44,12 @@
 		, #{memberId}
 		)
 	</insert>
+	
+	<select id="select" parameterType="com.withTalk.server.model.ChatRoom" resultMap="joinChatRoomResultMap">
+		SELECT *
+		FROM JOIN_CHATROOM
+		<include refid="whereSql" />
+	</select>	
 	
 	<select id="selectMemberByRoomId"
       parameterType="com.withTalk.server.model.ChatRoom" resultType="String">

@@ -34,7 +34,6 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 		JSONObject jsonObj = (JSONObject) parser.parse(msg);
 		String type = (String) jsonObj.get("type");
 		
-		System.out.println("들어온 메세지 : " + jsonObj);
 		System.out.println("----------------------------------------------");
 		
 		if ("friend".equals(type)) {
@@ -176,7 +175,8 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 					
 				//친구 삭제
 				case "delete" :
-					friend.setFriendId((String)jsonObj.get("id"));
+					friend.setMemberId((String)jsonObj.get("memberId"));
+					friend.setFriendId((String)jsonObj.get("friendId"));
 					
 					int deleteResult = friendServiceImpl.delete(friend);
 					
