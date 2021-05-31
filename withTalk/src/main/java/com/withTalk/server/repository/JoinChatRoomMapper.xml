@@ -46,9 +46,6 @@
 		#{memberId}
 		)
 	</insert>
-<<<<<<< HEAD
-
-=======
 	
 	<select id="select" parameterType="com.withTalk.server.model.ChatRoom" resultMap="joinChatRoomResultMap">
 		SELECT *
@@ -56,7 +53,6 @@
 		<include refid="whereSql" />
 	</select>	
 	
->>>>>>> refs/heads/jungwoo
 	<select id="selectMemberByRoomId"
 		parameterType="com.withTalk.server.model.ChatRoom" resultType="String">
 		SELECT
