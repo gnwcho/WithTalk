@@ -35,10 +35,14 @@ public class NettyServer {
 	@Autowired
 	private Map<String, Channel> mappingMember;
 	@Autowired
+<<<<<<< HEAD
 	public Map<Integer, Set<String>> chatRoomMap;
 	
 	public static final String SUCCESS = "r200";
 	public static final String FAIL = "r400";
+=======
+	private Map<Integer, Set<String>> chatRoomMap;
+>>>>>>> branch 'main' of https://github.com/gnwcho/WithTalk.git
 
 	private ChannelFuture cf;
 
