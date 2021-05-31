@@ -59,11 +59,15 @@
 	<select id="selectByName" parameterType="com.withTalk.server.model.Member" resultMap="memberResultMap">
 		SELECT *
 		FROM MEMBER M, FRIEND F
-		WHERE F.FRIEND_ID=M.ID AND F.MEMBER_ID= #{id} AND M.NAME= #{name}
+		WHERE F.FRIEND_ID=M.ID AND F.MEMBER_ID= #{id} AND M.NAME LIKE '%'||#{name}||'%'
 	</select>
 	
 	<select id="plusSeq" resultType="int">
 		SELECT CHATROOM_SEQ.NEXTVAL
 		FROM DUAL
 	</select>
+	
+	<delete id="delete" parameterType="com.withTalk.server.model.Friend">
+		DELETE FROM FRIEND WHERE MEMBER_ID=#{memberId} AND FRIEND_ID=#{friendId}
+	</delete>
 </mapper>

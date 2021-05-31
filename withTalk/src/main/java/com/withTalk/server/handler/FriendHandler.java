@@ -69,7 +69,7 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 					break;
 	
 				//친구 검색
-				case "search" :
+				case "searchFriend" :
 					System.out.println("selectFriend 들어옴=============================================== " );
 					member.setPhoneNo((String)jsonObj.get("phoneNo"));
 					
@@ -173,7 +173,8 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 					
 				//친구 삭제
 				case "delete" :
-					friend.setFriendId((String)jsonObj.get("id"));
+					friend.setMemberId((String)jsonObj.get("memberId"));
+					friend.setFriendId((String)jsonObj.get("friendId"));
 					
 					int deleteResult = friendServiceImpl.delete(friend);
 					

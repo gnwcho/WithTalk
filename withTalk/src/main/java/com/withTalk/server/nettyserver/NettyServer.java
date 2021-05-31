@@ -39,6 +39,7 @@ public class NettyServer {
 	
 	public static final String SUCCESS = "r200";
 	public static final String FAIL = "r400";
+	
 	private ChannelFuture cf;
 
 	public void start() throws Exception {
