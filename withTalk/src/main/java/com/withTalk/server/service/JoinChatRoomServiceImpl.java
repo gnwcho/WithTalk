@@ -20,7 +20,7 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 	//참여 조회
 	@Override
 	public List<JoinChatRoom> select(JoinChatRoom joinChatRoom) throws Exception {
-		return null;
+		return joinChatRoomMapper.select(joinChatRoom);
 	}
 
 	//참여 등록
