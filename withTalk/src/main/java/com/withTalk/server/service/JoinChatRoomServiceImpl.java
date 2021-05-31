@@ -35,6 +35,7 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 		} catch (Exception e) {
 			return "r400";
 		}
+		
 		return "r200";
 	}
 

@@ -61,4 +61,18 @@
 		)
 		WHERE SEQUENCE_NO=#{sequenceNo}
 	</update>
+	
+	<select id="selectCount"
+		parameterType="com.withTalk.server.model.ChatRoom"
+		resultType="int">
+		SELECT USER_COUNT
+		FROM CHATROOM
+		WHERE SEQUENCE_NO=#{sequenceNo}
+	</select>
+	
+	<delete id="delete"
+		parameterType="com.withTalk.server.model.ChatRoom">
+		DELETE FROM CHATROOM
+		WHERE SEQUENCE_NO=#{sequenceNo}
+	</delete>
 </mapper>

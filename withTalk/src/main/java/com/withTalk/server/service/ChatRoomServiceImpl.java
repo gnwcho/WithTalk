@@ -39,7 +39,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 			}
 			
 			int no = this.selectNo();
-			chatRoomMap.put(no + 1, receiverIdSet);
+			chatRoomMap.put(no, receiverIdSet);
+			System.out.println(no);
 			
 			result = "r200";
 		} else {
@@ -72,8 +73,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 	}
 
 	@Override
-	public int delete(ChatRoom chatRoom) throws Exception {
-		return 0;
+	public int deleteChatRoom(ChatRoom chatRoom) throws Exception {
+		return chatRoomMapper.delete(chatRoom);
 	}
 
 	@Override
@@ -92,5 +93,12 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 	@Override
 	public void updateUserCount(ChatRoom chatRoom) throws Exception {
 		chatRoomMapper.updateCount(chatRoom);
+	}
+	
+	//대화방 인원 조회
+	@Override
+	public int memberCount(ChatRoom chatRoom) throws Exception {
+		int result = chatRoomMapper.selectCount(chatRoom);
+		return result;
 	}
 }

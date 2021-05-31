@@ -42,8 +42,7 @@
 		, #{chatRoomName}
 		, SYSDATE
 		, #{chatRoomNo}
-		,
-		#{memberId}
+		, #{memberId}
 		)
 	</insert>
 
