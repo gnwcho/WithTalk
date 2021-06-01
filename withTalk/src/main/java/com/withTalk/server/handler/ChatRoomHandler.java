@@ -101,19 +101,19 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 					resultJson.put("status", "r200");
 					resultJson.put("chatRoomNo", no);
 					resultJson.put("userCount", resultChatRoom.getUserCount());
-					resultJson.put("memberId", memberIdList);
+					resultJson.put("memberIdList", memberIdList);
 				} else {
 					resultJson.put("status","r400");
 					resultJson.put("chatRoomNo", null);
 					resultJson.put("userCount", null);
-					resultJson.put("memberId", null);
+					resultJson.put("memberIdList", null);
 				}
 
 				ctx.writeAndFlush(resultJson.toJSONString());
 				break;
 
 			
-// 대화방 나가기
+			// 대화방 나가기
 			case "exit":
 				int roomNo = Integer.parseInt(String.valueOf(jsonObj.get("chatRoomNo")));
 				
@@ -175,7 +175,7 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 				ctx.writeAndFlush(resultJson.toJSONString());
 				break;
 				
-			case "check":
+			case "checkExistChatRoom":
 				resultJson.put("type", type);
 				resultJson.put("method", method);
 				resultJson.put("status", "r400");
@@ -184,6 +184,55 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 				System.out.println("checkExChatRoom 결과 : " + resultJson);
 				ctx.writeAndFlush(resultJson.toJSONString());
 				
+				break;
+				
+			case "selectAllChatRoom":
+				joinChatRoom.setMemberId((String) jsonObj.get("id"));
+				
+				List<JoinChatRoom> joinChatRoomList = joinChatRoomServiceImpl.select(joinChatRoom);
+				
+				resultJson.put("type", type);
+				resultJson.put("method", method);
+				
+				int chatRoomNo = 0;
+				
+				JoinChatRoom getIdListJson = new JoinChatRoom();
+				List<String> idList = new ArrayList<String>();
+				
+				JSONObject chatRoomJson = null;
+				JSONArray chatRoomList = new JSONArray();
+				resultChatRoom = new ChatRoom();
+				
+				
+				if (joinChatRoomList != null) {
+					for (int i = 0; i < joinChatRoomList.size(); i++) {
+						chatRoomNo = joinChatRoomList.get(i).getChatRoomNo();
+						getIdListJson.setChatRoomNo(chatRoomNo);
+						resultChatRoom.setSequenceNo(chatRoomNo);
+						
+						for (int j = 0 ; j < joinChatRoomList.size(); j++) {
+							idList.add(joinChatRoomList.get(j).getMemberId());
+						}
+						
+						System.out.println("idList : " + idList);
+						
+						chatRoomJson = new JSONObject();
+						
+						chatRoomJson.put("chatRoomNo", chatRoomNo);
+						chatRoomJson.put("memberIdList", idList);
+						chatRoomJson.put("chatRoomType", chatRoomServiceImpl.select(resultChatRoom));
+						
+						chatRoomList.add(chatRoomJson);
+					}
+					resultJson.put("status", "r200");
+					resultJson.put("chatRoomList", chatRoomList);
+				} else {
+					resultJson.put("status", "r400");
+					resultJson.put("chatRoomList",null);
+				}
+				
+				System.out.println("selectAllChatRoom 결과 : " + resultJson);
+				ctx.writeAndFlush(resultJson.toJSONString());
 				break;
 
 			default:

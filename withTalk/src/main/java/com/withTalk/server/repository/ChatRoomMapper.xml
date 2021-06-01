@@ -8,15 +8,19 @@
 		type="com.withTalk.server.model.ChatRoom">
 		<result column="SEQUENCE_NO" property="sequenceNo" />
 		<result column="USER_COUNT" property="userCount" />
+		<result column="TYPE" property="type" />
 	</resultMap>
 
 	<sql id="whereSql">
 		<where>
 			<if test="sequenceNo != null and sequenceNo != ''">
-				AND SEQUENCE_NO = BINARY #{sequenceNo}
+				AND SEQUENCE_NO = #{sequenceNo}
 			</if>
 			<if test="userCount != null and userCount != ''">
 				AND USER_COUNT = #{userCount}
+			</if>
+			<if test="type != null and type != ''">
+				AND TYPE = #{type}
 			</if>
 		</where>
 	</sql>

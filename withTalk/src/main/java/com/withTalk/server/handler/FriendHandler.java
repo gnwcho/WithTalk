@@ -176,6 +176,8 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 					friend.setMemberId((String)jsonObj.get("memberId"));
 					friend.setFriendId((String)jsonObj.get("friendId"));
 					
+					System.out.println("deleteFriend 들어온 요청 : " + friend.getFriendId() + "||" + friend.getMemberId());
+
 					int deleteResult = friendServiceImpl.delete(friend);
 					
 					resultJson.put("type", type);

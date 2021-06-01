@@ -11,5 +11,4 @@ public interface JoinChatRoomService {
 	public String insert (JoinChatRoom joinChatRoom, List<String> receiverId) throws Exception;
 	//참여 삭제
 	public String delete (JoinChatRoom joinChatRoom) throws Exception;
-	
 }
