@@ -17,6 +17,7 @@ import com.withTalk.server.service.ChatRoomServiceImpl;
 import com.withTalk.server.service.JoinChatRoomServiceImpl;
 
 import io.netty.channel.ChannelHandler.Sharable;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -29,6 +30,8 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 	public ChatRoomServiceImpl chatRoomServiceImpl;
 	@Autowired
 	public JoinChatRoomServiceImpl joinChatRoomServiceImpl;
+	@Autowired
+	private Map<String, Channel> mappingMember;
 	@Autowired
 	public Map<Integer, Set<String>> chatRoomMap;
 
@@ -55,13 +58,14 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 			switch (method) {
 			// 대화방 생성
 			case "create":
-				
 				List<String> receiverId = (List<String>) jsonObj.get("receiverId");
-
+				String chatRoomType = (String) jsonObj.get("chatRoomType");
+				
+				chatRoom.setType(chatRoomType);
 				result = chatRoomServiceImpl.insert(chatRoom, receiverId);
 
 				if ("r200".equals(result)) {
-					joinChatRoom.setChatRoomName((String) jsonObj.get("chatRoomName"));
+ 					joinChatRoom.setChatRoomName((String) jsonObj.get("chatRoomName"));
 					joinChatRoom.setChatRoomNo(chatRoomServiceImpl.selectNo());
 
 					if ("r200".equals(joinChatRoomServiceImpl.insert(joinChatRoom, receiverId))) {
@@ -69,12 +73,20 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 					} else {
 						status = "r400";
 					}
+					
 					resultJson.put("type", type);
 					resultJson.put("method", method);
 					resultJson.put("status", status);
-
-					System.out.println("create 메소드 출력하는 메세지 : " + resultJson);
-					ctx.writeAndFlush(resultJson.toJSONString());
+					resultJson.put("joinMember", receiverId);
+					resultJson.put("chatRoomType", chatRoomType);
+					
+					for (String id : receiverId) {
+						Channel ch =  mappingMember.get(id);
+						if (ch != null) {
+							ch.writeAndFlush(resultJson.toJSONString());
+						}
+					}
+					
 					break;
 				}
 
