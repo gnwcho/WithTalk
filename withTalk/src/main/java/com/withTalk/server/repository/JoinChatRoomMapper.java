@@ -19,4 +19,6 @@ public interface JoinChatRoomMapper {
 	public List<String> selectMemberByRoomId(ChatRoom chatRoom) throws Exception;
 	//참여 조회
 	public List<JoinChatRoom> select(JoinChatRoom joinChatRoom) throws Exception;
+	//참여 중복 제거 조회
+	public List<JoinChatRoom> selectDistinctNo (JoinChatRoom joinChatRoom) throws Exception;
 }

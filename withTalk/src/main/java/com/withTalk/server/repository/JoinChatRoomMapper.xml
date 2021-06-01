@@ -59,6 +59,14 @@
 		FROM JOIN_CHATROOM
 		WHERE CHATROOM_NO = #{sequenceNo}
 	</select>
+	
+	<select id="selectDistinctNo"
+		parameterType="com.withTalk.server.model.ChatRoom" resultMap="joinChatRoomResultMap">
+		SELECT DISTINCT CHATROOM_NO
+		FROM JOIN_CHATROOM
+		WHERE MEMBER_ID = #{memberId}
+	</select>
+	
 
 	<delete id="delete"
 		parameterType="com.withTalk.server.model.JoinChatRoom">

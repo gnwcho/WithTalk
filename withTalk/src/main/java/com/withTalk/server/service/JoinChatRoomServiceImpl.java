@@ -1,5 +1,6 @@
 package com.withTalk.server.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -79,5 +80,10 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 		}
 		
 		return status;
+	}
+
+	@Override
+	public List<JoinChatRoom> selectDistinctNo(JoinChatRoom joinChatRoom) throws Exception {
+		return joinChatRoomMapper.selectDistinctNo(joinChatRoom);
 	}
 }
