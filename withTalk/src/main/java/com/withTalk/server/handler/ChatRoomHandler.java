@@ -68,10 +68,10 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 					joinChatRoom.setChatRoomName((String) jsonObj.get("chatRoomName"));
 					joinChatRoom.setChatRoomNo(chatRoomServiceImpl.selectNo());
 
-					if ("r200".equals(joinChatRoomServiceImpl.insert(joinChatRoom, receiverId))) {
-						status = "r200";
+					if ("dm".equals(chatRoomType)) {
+						status = joinChatRoomServiceImpl.insert(joinChatRoom, receiverId, (String) jsonObj.get("senderId"));
 					} else {
-						status = "r400";
+						status = joinChatRoomServiceImpl.insert(joinChatRoom, receiverId);
 					}
 
 					resultJson.put("type", type);
@@ -123,8 +123,7 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 
 				ctx.writeAndFlush(resultJson.toJSONString());
 				break;
-
-			// 대화방 나가기
+				
 			case "exit":
 				int roomNo = Integer.parseInt(String.valueOf(jsonObj.get("chatRoomNo")));
 

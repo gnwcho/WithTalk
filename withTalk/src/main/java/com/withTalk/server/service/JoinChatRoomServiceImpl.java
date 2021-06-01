@@ -24,14 +24,38 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 		return joinChatRoomMapper.select(joinChatRoom);
 	}
 
-	//참여 등록
+	//단체방 참여 등록
 	@Override
 	public String insert(JoinChatRoom joinChatRoom, List<String> receiverId) throws Exception {
 		try {
 			for (String id : receiverId) {
 				joinChatRoom.setMemberId(id);
-				System.out.println(id);
 				joinChatRoomMapper.insert(joinChatRoom);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "r400";
+		}
+		
+		return "r200";
+	}
+	
+	//개인방 참여 등록
+	@Override
+	public String insert(JoinChatRoom joinChatRoom, List<String> receiverId, String senderId) throws Exception {
+		try {
+			for (String id : receiverId) {
+				if (id.equals(senderId)) {
+					joinChatRoom.setChatRoomName(receiverId.get(1));
+					joinChatRoom.setMemberId(id);
+					
+					joinChatRoomMapper.insert(joinChatRoom);
+				} else {
+					joinChatRoom.setChatRoomName(senderId);
+					joinChatRoom.setMemberId(id);
+					
+					joinChatRoomMapper.insert(joinChatRoom);
+				}
 			}
 		} catch (Exception e) {
 			return "r400";
