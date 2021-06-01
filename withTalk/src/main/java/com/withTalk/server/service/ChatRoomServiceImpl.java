@@ -27,6 +27,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 	@Override
 	public String insert(ChatRoom chatRoom, List<String> receiverId) throws Exception{
 		chatRoom.setUserCount(receiverId.size());
+		
 		int insertResult = chatRoomMapper.insert(chatRoom);
 		
 		String result = null;

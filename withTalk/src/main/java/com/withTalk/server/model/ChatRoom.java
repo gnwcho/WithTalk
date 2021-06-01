@@ -6,7 +6,7 @@ public class ChatRoom implements Serializable {
 	private int sequenceNo;
 	private int userCount;
 	private String type;
-	
+
 	public ChatRoom() {
 
 	}
@@ -15,8 +15,8 @@ public class ChatRoom implements Serializable {
 		this.sequenceNo = sequenceNo;
 		this.userCount = userCount;
 		this.type = type;
-
 	}
+	
 	public int getSequenceNo() {
 		return sequenceNo;
 	}

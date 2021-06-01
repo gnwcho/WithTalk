@@ -30,6 +30,7 @@
 		VALUES (
 		CHATROOM_SEQ.NEXTVAL
 		, #{userCount}
+		, #{type}
 		)
 	</insert>
 	

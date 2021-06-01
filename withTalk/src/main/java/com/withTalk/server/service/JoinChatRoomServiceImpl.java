@@ -30,7 +30,7 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 		try {
 			for (String id : receiverId) {
 				joinChatRoom.setMemberId(id);
-				
+				System.out.println(id);
 				joinChatRoomMapper.insert(joinChatRoom);
 			}
 		} catch (Exception e) {
