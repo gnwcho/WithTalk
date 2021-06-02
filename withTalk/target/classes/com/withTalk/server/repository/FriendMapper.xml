@@ -28,7 +28,7 @@
 				AND MEMBER_ID = #{memberId}
 			</if>
 			<if test="friendId != null and friendId != ''">
-				AND FRIENDID = #{friendId}
+				AND FRIEND_ID = #{friendId}
 			</if>
 		</where>
 	</sql>
@@ -41,9 +41,9 @@
 		<include refid="whereSql" />
 	</select>
 
-	<select id="select" parameterType="com.withTalk.server.model.Friend" resultMap="memberResultMap">
+	<select id="select" parameterType="com.withTalk.server.model.Friend" resultMap="friendResultMap">
 		SELECT *
-		FROM MEMBER M
+		FROM FRIEND
 		<include refid="whereSql" />
 	</select>
 

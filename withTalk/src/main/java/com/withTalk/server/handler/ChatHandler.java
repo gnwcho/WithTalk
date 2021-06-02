@@ -57,6 +57,7 @@ public class ChatHandler  extends SimpleChannelInboundHandler<String> {
 					
 					while (it.hasNext()) {
 						String receiveId = it.next();
+						System.out.println("receiveId : " + receiveId);
 						if (mappingMember.get(receiveId) != null) {
 							resultJson.put("type", type);
 							resultJson.put("method", method);
@@ -64,6 +65,7 @@ public class ChatHandler  extends SimpleChannelInboundHandler<String> {
 							resultJson.put("contents", message.getContents());
 							resultJson.put("senderId", message.getSenderId());
 							resultJson.put("sendTime", message.getSendTime());
+							
 							mappingMember.get(receiveId).writeAndFlush(resultJson.toJSONString());
 						}
 					}
