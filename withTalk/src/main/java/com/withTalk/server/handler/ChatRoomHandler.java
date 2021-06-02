@@ -185,6 +185,7 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 				ctx.writeAndFlush(resultJson.toJSONString());
 				break;
 
+			//삭제 필요
 			case "checkExistChatRoom":
 				resultJson.put("type", type);
 				resultJson.put("method", method);
