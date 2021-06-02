@@ -128,7 +128,7 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 			case "exit":
 				resultJson.put("type", type);
 				resultJson.put("method", method);
-				
+
 				if (jsonObj.get("chatRoomNo") != null && jsonObj.get("senderId") != null) {
 					int roomNo = Integer.parseInt(String.valueOf(jsonObj.get("chatRoomNo")));
 					joinChatRoom.setMemberId((String) jsonObj.get("senderId"));
@@ -146,7 +146,6 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 						}
 					}
 
-					
 					resultJson.put("status", status);
 				} else {
 					resultJson.put("status", "r400");
@@ -200,7 +199,6 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 
 				System.out.println("checkExChatRoom 결과 : " + resultJson);
 				ctx.writeAndFlush(resultJson.toJSONString());
-
 				break;
 
 			// 모든 참여 대화방 조회
@@ -228,7 +226,42 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 				System.out.println("selectAllChatRoom 결과 : " + resultJson);
 				ctx.writeAndFlush(resultJson.toJSONString());
 				break;
+				
+			case "updateName":
+				if (jsonObj.get("chatRoomNo") != null && jsonObj.get("newName") != null
+						&& jsonObj.get("senderId") != null) {
+					int chatRoomNo = Integer.parseInt(String.valueOf(jsonObj.get("chatRoomNo")));
+					String chatRoomName = (String) jsonObj.get("newName");
+					String memberId = (String) jsonObj.get("senderId");
 
+					joinChatRoom = new JoinChatRoom();
+
+					joinChatRoom.setChatRoomNo(chatRoomNo);
+					joinChatRoom.setChatRoomName(chatRoomName);
+					joinChatRoom.setMemberId(memberId);
+
+					resultJson.put("type", chatRoom);
+					resultJson.put("method", method);
+
+					if (joinChatRoomServiceImpl.update(joinChatRoom) == 1) {
+						resultJson.put("status", "r200");
+						resultJson.put("chatRoomNo", chatRoomNo);
+						resultJson.put("newName", chatRoomName);
+						
+						System.out.println("updateName 결과 : " + resultJson);
+						ctx.writeAndFlush(resultJson.toJSONString());
+						break;
+					}
+
+				}
+					resultJson.put("status", "r400");
+					resultJson.put("chatRoomNo", -1);
+					resultJson.put("newName", null);
+				
+				System.out.println("updateName 결과 : " + resultJson);
+				ctx.writeAndFlush(resultJson.toJSONString());
+				break;
+				
 			default:
 				System.out.println("not found method...");
 			}

@@ -67,6 +67,12 @@
 		WHERE MEMBER_ID = #{memberId}
 	</select>
 	
+	<update id="update" parameterType="com.withTalk.server.model.ChatRoom">
+		UPDATE JOIN_CHATROOM
+		SET CHATROOM_NAME=#{chatRoomName}
+		WHERE MEMBER_ID=#{memberId} AND CHATROOM_NO=#{chatRoomNo}
+	</update>
+	
 
 	<delete id="delete"
 		parameterType="com.withTalk.server.model.JoinChatRoom">

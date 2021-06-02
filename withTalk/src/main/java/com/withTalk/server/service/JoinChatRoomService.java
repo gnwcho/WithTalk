@@ -13,6 +13,8 @@ public interface JoinChatRoomService {
 	public String insert (JoinChatRoom joinChatRoom, List<String> receiverId) throws Exception;
 	//개인방 참여 등록
 	public String insert (JoinChatRoom joinChatRooms, List<String> receiverId, String senderId) throws Exception;
+	//참여 대화방 이름 변경
+	public int update (JoinChatRoom joinChatRoom) throws Exception;
 	//참여 삭제
 	public String delete (JoinChatRoom joinChatRoom) throws Exception;
 	//참여 중복 제거 조회

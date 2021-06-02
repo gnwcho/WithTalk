@@ -67,6 +67,11 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 
 		return "r200";
 	}
+	
+	//참여 대화방 이름 변경
+	public int update (JoinChatRoom joinChatRoom) throws Exception {
+		return joinChatRoomMapper.update(joinChatRoom);
+	}
 
 	// 참여 삭제
 	@Override

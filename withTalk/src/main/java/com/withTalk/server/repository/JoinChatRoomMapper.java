@@ -21,4 +21,6 @@ public interface JoinChatRoomMapper {
 	public List<JoinChatRoom> select(JoinChatRoom joinChatRoom) throws Exception;
 	//참여 중복 제거 조회
 	public List<JoinChatRoom> selectDistinctNo (JoinChatRoom joinChatRoom) throws Exception;
+	//참여 대화방 이름 변경
+	public int update (JoinChatRoom joinChatRoom) throws Exception;
 }
