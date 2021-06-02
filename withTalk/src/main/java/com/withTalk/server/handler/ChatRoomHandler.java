@@ -126,7 +126,6 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 				
 			case "exit":
 				int roomNo = Integer.parseInt(String.valueOf(jsonObj.get("chatRoomNo")));
-
 				joinChatRoom.setMemberId((String) jsonObj.get("senderId"));
 				joinChatRoom.setChatRoomNo(roomNo);
 
