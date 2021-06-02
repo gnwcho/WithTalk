@@ -102,4 +102,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 		int result = chatRoomMapper.selectCount(chatRoom);
 		return result;
 	}
+
+	@Override
+	public int delete(ChatRoom chatRoom) throws Exception {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

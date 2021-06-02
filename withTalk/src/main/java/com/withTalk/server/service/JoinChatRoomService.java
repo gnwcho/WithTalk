@@ -7,6 +7,8 @@ import com.withTalk.server.model.JoinChatRoom;
 public interface JoinChatRoomService {
 	//참여 조회
 	public List<JoinChatRoom> select (JoinChatRoom joinChatRoom) throws Exception;
+	//모든 참여 대화방 조회
+	public List<JoinChatRoom> selectAllChatRoom (List<JoinChatRoom> joinChatRoomList) throws Exception;
 	//단체방 참여 등록
 	public String insert (JoinChatRoom joinChatRoom, List<String> receiverId) throws Exception;
 	//개인방 참여 등록

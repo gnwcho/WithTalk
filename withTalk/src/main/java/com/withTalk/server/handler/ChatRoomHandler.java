@@ -197,57 +197,31 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 
 				break;
 
+			// 모든 참여 대화방 조회
 			case "selectAllChatRoom":
 				String id = (String) jsonObj.get("id");
 				joinChatRoom.setMemberId(id);
 				
 				List<JoinChatRoom> selectByIdList = joinChatRoomServiceImpl.selectDistinctNo(joinChatRoom);
-				JSONArray chatRoomList = new JSONArray();
-				JSONObject row = null;
-				List<String> idList = null;
+				
+				resultJson.put("type", type);
+				resultJson.put("method", method);
 				
 				if (selectByIdList != null) {
-					for (int i = 0; i < selectByIdList.size(); i++) {
-						int chatRoomNo = selectByIdList.get(i).getChatRoomNo();
-						joinChatRoom = new JoinChatRoom();
-						joinChatRoom.setChatRoomNo(chatRoomNo);
-						
-						List<JoinChatRoom> selectByNo = joinChatRoomServiceImpl.select(joinChatRoom);
-						
-						idList = new ArrayList<String>();
-						
-						for (int j = 0; j < selectByNo.size(); j++) {
-							idList.add(selectByNo.get(j).getMemberId());
-						}
-						
-						row = new JSONObject();
-						row.put("chatRoomNo", chatRoomNo);
-						row.put("memberIdList", idList);
-						
-						if (idList.size() > 2) {
-							row.put("chatRoomType", "GM");
-						} else {
-							row.put("chatRoomType", "DM");
-						}
-						
-						chatRoomList.add(row);
-					}
+					JSONArray chatRoomList = joinChatRoomServiceImpl.selectAllChatRoom(selectByIdList);
 					
-					resultJson.put("type", type);
-					resultJson.put("method", method);
-					
-					if (row != null) {
+					if (chatRoomList != null) {
 						resultJson.put("status", "r200");
 						resultJson.put("chatRoomList", chatRoomList);
-					} else {
-						resultJson.put("status", "r400");
-						resultJson.put("chatRoomList", null);
 					}
-					
-					System.out.println("selectAllChatRoom 결과 : " + resultJson);
-					ctx.writeAndFlush(resultJson.toJSONString());
-					break;
+				} else {
+					resultJson.put("status", "r400");
+					resultJson.put("chatRoomList", null);
 				}
+				
+				System.out.println("selectAllChatRoom 결과 : " + resultJson);
+				ctx.writeAndFlush(resultJson.toJSONString());
+				break;
 				
 			default:
 				System.out.println("not found method...");
