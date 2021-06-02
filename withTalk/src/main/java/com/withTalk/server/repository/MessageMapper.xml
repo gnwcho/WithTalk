@@ -34,7 +34,8 @@
 	</sql>
 	
 	<insert id="insert"
-		parameterType="com.withTalk.server.model.Message">
+		parameterType="com.withTalk.server.model.Message"
+		useGeneratedKeys="true">
 		INSERT INTO MESSAGE
 		VALUES(
 		MESSAGE_SEQ.NEXTVAL
@@ -43,5 +44,16 @@
 		, #{chatRoomNo}
 		, #{senderId}
 		)
+		<selectKey keyProperty="sequenceNo" resultType="int" order="AFTER">
+			SELECT MESSAGE_SEQ.CURRVAL FROM DUAL		
+		</selectKey>
 	</insert>
+	
+	<select id="selectTime"
+		parameterType="com.withTalk.server.model.Message"
+		resultType="String">
+		SELECT TO_CHAR(SEND_TIME, 'YYYY:MM:DD:hh:mm')
+		FROM MESSAGE
+		WHERE SEQUENCE_NO=#{sequenceNo}
+	</select>
 </mapper>
