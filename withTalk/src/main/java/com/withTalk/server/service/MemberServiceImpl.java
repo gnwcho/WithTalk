@@ -53,8 +53,9 @@ public class MemberServiceImpl implements MemberService {
 
 	//사용자 정보 조회
 	public Member searchMemberInfo(Member member) throws Exception {
+		System.out.println("서비스 들어온 멤버 : " + member);
 		Member row = memberMapper.select(member);
-
+		System.out.println("row : " + row);
 		if (row != null) {
 			return row;
 		} else {

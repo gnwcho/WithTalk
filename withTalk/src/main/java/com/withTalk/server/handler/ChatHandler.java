@@ -55,8 +55,10 @@ public class ChatHandler  extends SimpleChannelInboundHandler<String> {
 					Iterator<String> it = joinMember.iterator();
 					while (it.hasNext()) {
 						String receiveId = it.next();
+						System.out.println("receiveId : " + receiveId);
 						if (mappingMember.get(receiveId) != null) {
 							mappingMember.get(receiveId).writeAndFlush(message.getSenderId() + " : " + message.getContents());
+							System.out.println("보낸 메세지 : " + message.getSenderId() + " : " + message.getContents());
 						}
 					}
 				} else {

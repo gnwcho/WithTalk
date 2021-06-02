@@ -34,6 +34,20 @@ public class FriendServiceImpl implements FriendService{
 		}
 		
 	}
+	
+	@Override
+	public int select(Friend friend) {
+		try {
+			if (friendMapper.select(friend) == null) {
+				return 0;
+			} else {
+				return -1;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+		}
+	}
 	//친구 검색
 	@Override
 	public Member search(Member member) {

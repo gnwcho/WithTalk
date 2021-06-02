@@ -13,7 +13,7 @@ public interface FriendMapper {
 
 	public List<Friend> selectAll(Friend friend) throws Exception;
 	
-	public Member select(Member member) throws Exception;
+	public Friend select(Friend friend) throws Exception;
 
 	public int delete(Friend friend) throws Exception;
 	
