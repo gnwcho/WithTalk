@@ -41,27 +41,35 @@ public class ChatHandler  extends SimpleChannelInboundHandler<String> {
 		if ("chat".equals(type)) {
 			
 			String method = (String) jsonObj.get("method");
-			
 			Message message = new Message();
+			
+			JSONObject resultJson = new JSONObject();
 			
 			switch (method) {
 			case "sendChat":
 				message.setContents((String) jsonObj.get("contents"));
 				message.setSenderId((String) jsonObj.get("senderId"));
 				message.setChatRoomNo(Integer.parseInt(String.valueOf(jsonObj.get("chatRoomNo"))));
-				System.out.println(message.getChatRoomNo());
 				
-				if ("r200".equals(chatServiceImpl.sendMessage(message))) {
+				message = chatServiceImpl.sendMessage(message);
+				if (message.getSequenceNo() != 0) {
 					int chatRoomNo = message.getChatRoomNo();
 					Set<String> joinMember = chatRoomMap.get(chatRoomNo);
 					
 					Iterator<String> it = joinMember.iterator();
+					
 					while (it.hasNext()) {
 						String receiveId = it.next();
 						System.out.println("receiveId : " + receiveId);
 						if (mappingMember.get(receiveId) != null) {
-							mappingMember.get(receiveId).writeAndFlush(message.getSenderId() + " : " + message.getContents());
-							System.out.println("보낸 메세지 : " + message.getSenderId() + " : " + message.getContents());
+							resultJson.put("type", type);
+							resultJson.put("method", method);
+							resultJson.put("chatRoomNo", chatRoomNo);
+							resultJson.put("contents", message.getContents());
+							resultJson.put("senderId", message.getSenderId());
+							resultJson.put("sendTime", message.getSendTime());
+							
+							mappingMember.get(receiveId).writeAndFlush(resultJson.toJSONString());
 						}
 					}
 				} else {

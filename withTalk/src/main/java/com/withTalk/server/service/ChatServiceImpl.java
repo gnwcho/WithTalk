@@ -12,15 +12,17 @@ public class ChatServiceImpl implements ChatService{
 	private MessageMapper messageMapper;
 	
 	@Override
-	public String sendMessage(Message message) throws Exception {
+	public Message sendMessage(Message message) throws Exception {
 		String result = null;
-		
 		if (messageMapper.insert(message) == 1) {
-			result = "r200";
-		} else {
-			result = "r400";
-		}
+			message.setSendTime(this.messageTime(message));
+		} 
 		
-		return result;
+		return message;
+	}
+
+	@Override
+	public String messageTime(Message message) throws Exception {
+		return messageMapper.selectTime(message);
 	}
 }

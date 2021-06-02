@@ -64,7 +64,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 	public ChatRoom select(ChatRoom chatRoom) throws Exception {
 		ChatRoom row = chatRoomMapper.select(chatRoom);
 		
-		
 		return null;
 	}
 
@@ -100,12 +99,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 	@Override
 	public int memberCount(ChatRoom chatRoom) throws Exception {
 		int result = chatRoomMapper.selectCount(chatRoom);
+		
 		return result;
 	}
 
-	@Override
-	public int delete(ChatRoom chatRoom) throws Exception {
+
+	public boolean selectExistDm(ChatRoom chatRoom, List<String> receiverId) throws Exception {
 		// TODO Auto-generated method stub
-		return 0;
+		return false;
 	}
 }

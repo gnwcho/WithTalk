@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 public class Message implements Serializable {
 	private int sequenceNo;
-	private LocalDate sendTime;
+	private String sendTime;
 	private String contents;
 	private int chatRoomNo;
 	private String senderId;
@@ -14,7 +14,7 @@ public class Message implements Serializable {
 		
 	}
 	
-	public Message(int sequenceNo, LocalDate sendTime, String contents, int chatRoomNo, String senderId) {
+	public Message(int sequenceNo, String sendTime, String contents, int chatRoomNo, String senderId) {
 		this.sequenceNo = sequenceNo;
 		this.sendTime = sendTime;
 		this.contents = contents;
@@ -30,11 +30,11 @@ public class Message implements Serializable {
 		this.sequenceNo = sequenceNo;
 	}
 	
-	public LocalDate getSendTime() {
+	public String getSendTime() {
 		return sendTime;
 	}
 	
-	public void setSendTime(LocalDate sendTime) {
+	public void setSendTime(String sendTime) {
 		this.sendTime = sendTime;
 	}
 	

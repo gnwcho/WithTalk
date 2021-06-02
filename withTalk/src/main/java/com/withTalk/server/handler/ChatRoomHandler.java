@@ -58,6 +58,7 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 
 			switch (method) {
 			// 대화방 생성
+<<<<<<< HEAD
 				case "create":
 					List<String> receiverId = (List<String>) jsonObj.get("receiverId");
 					String chatRoomType = (String) jsonObj.get("chatRoomType");
@@ -74,6 +75,39 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 									(String) jsonObj.get("senderId"));
 						} else {
 							status = joinChatRoomServiceImpl.insert(joinChatRoom, receiverId);
+=======
+			case "create":
+				List<String> receiverId = (List<String>) jsonObj.get("receiverId");
+				String chatRoomType = (String) jsonObj.get("chatRoomType");
+
+				chatRoom.setType(chatRoomType);
+				chatRoomServiceImpl.selectExistDm(chatRoom, receiverId);
+				
+				result = chatRoomServiceImpl.insert(chatRoom, receiverId);
+
+				if ("r200".equals(result)) {
+					joinChatRoom.setChatRoomName((String) jsonObj.get("chatRoomName"));
+					joinChatRoom.setChatRoomNo(chatRoomServiceImpl.selectNo());
+
+					if ("dm".equals(chatRoomType)) {
+						status = joinChatRoomServiceImpl.insert(joinChatRoom, receiverId,
+								(String) jsonObj.get("senderId"));
+					} else {
+						status = joinChatRoomServiceImpl.insert(joinChatRoom, receiverId);
+					}
+					
+					resultJson.put("type", type);
+					resultJson.put("method", method);
+					resultJson.put("status", status);
+					resultJson.put("joinMember", receiverId);
+					resultJson.put("chatRoomType", chatRoomType);
+					resultJson.put("chatRoomNo", chatRoomServiceImpl.selectNo());
+
+					for (String id : receiverId) {
+						Channel ch = mappingMember.get(id);
+						if (ch != null) {
+							ch.writeAndFlush(resultJson.toJSONString());
+>>>>>>> refs/heads/main
 						}
 	
 						resultJson.put("type", type);

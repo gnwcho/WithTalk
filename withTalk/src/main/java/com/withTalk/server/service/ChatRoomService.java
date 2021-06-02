@@ -15,14 +15,14 @@ public interface ChatRoomService {
 		public List<ChatRoom> selectAll() throws Exception;
 		//대화방 번호 조회
 		public int selectNo() throws Exception;
-		//대화방 삭제
-		public int delete(ChatRoom chatRoom) throws Exception;
 		//대화방 시퀀스 생성
 		public int test() throws Exception;
-		
-		int deleteChatRoom(ChatRoom chatRoom) throws Exception;
-		
-		void updateUserCount(ChatRoom chatRoom) throws Exception;
-		
-		int memberCount(ChatRoom chatRoom) throws Exception;
+		//대화방 참여자 수 수정
+		public void updateUserCount(ChatRoom chatRoom) throws Exception;
+		//대화방 참여자 수 조회
+		public int memberCount(ChatRoom chatRoom) throws Exception;
+		//개인 대화방 존재 확인
+		public boolean selectExistDm(ChatRoom chatRoom, List<String> receiverId) throws Exception;
+		//대화방 삭제
+		public int deleteChatRoom(ChatRoom chatRoom) throws Exception;
 }
