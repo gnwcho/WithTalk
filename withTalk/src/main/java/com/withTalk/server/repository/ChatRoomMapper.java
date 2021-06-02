@@ -25,4 +25,5 @@ public interface ChatRoomMapper {
 	public void updateCount(ChatRoom chatRoom) throws Exception;
 	//대화방 인원 조회
 	public int selectCount(ChatRoom chatRoom) throws Exception;
+	//개인방 조회
 }

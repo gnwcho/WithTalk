@@ -44,6 +44,7 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 	@Override
 	public String insert(JoinChatRoom joinChatRoom, List<String> receiverId, String senderId) throws Exception {
 		try {
+			
 			for (String id : receiverId) {
 				if (id.equals(senderId)) {
 					joinChatRoom.setChatRoomName(receiverId.get(1));

@@ -16,8 +16,8 @@ import com.withTalk.server.model.JoinChatRoom;
 import com.withTalk.server.service.ChatRoomServiceImpl;
 import com.withTalk.server.service.JoinChatRoomServiceImpl;
 
-import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -62,6 +62,8 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 				String chatRoomType = (String) jsonObj.get("chatRoomType");
 
 				chatRoom.setType(chatRoomType);
+				chatRoomServiceImpl.selectExistDm(chatRoom, receiverId);
+				
 				result = chatRoomServiceImpl.insert(chatRoom, receiverId);
 
 				if ("r200".equals(result)) {
@@ -73,12 +75,13 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 					} else {
 						status = joinChatRoomServiceImpl.insert(joinChatRoom, receiverId);
 					}
-
+					
 					resultJson.put("type", type);
 					resultJson.put("method", method);
 					resultJson.put("status", status);
 					resultJson.put("joinMember", receiverId);
 					resultJson.put("chatRoomType", chatRoomType);
+					resultJson.put("chatRoomNo", chatRoomServiceImpl.selectNo());
 
 					for (String id : receiverId) {
 						Channel ch = mappingMember.get(id);

@@ -102,4 +102,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 		int result = chatRoomMapper.selectCount(chatRoom);
 		return result;
 	}
+
+	@Override
+	public boolean selectExistDm(ChatRoom chatRoom, List<String> receiverId) throws Exception {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

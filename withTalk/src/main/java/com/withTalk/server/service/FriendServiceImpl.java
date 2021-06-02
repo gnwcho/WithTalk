@@ -86,6 +86,8 @@ public class FriendServiceImpl implements FriendService{
 			System.out.println("member ID : " + member.getId() + "|| member Name : " + member.getName());
 			List<Member> rows = friendMapper.selectByName(member);
 			
+			//rows.remove(member.getId());
+			
 			return rows;
 		} catch (Exception e) {
 			e.printStackTrace();
