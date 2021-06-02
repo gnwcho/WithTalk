@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.withTalk.server.model.Member;
+import com.withTalk.server.nettyserver.NettyServer;
 import com.withTalk.server.service.MemberServiceImpl;
 
 import io.netty.channel.Channel;
@@ -65,13 +66,13 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 						resultMember = memberServiceImpl.searchMemberInfo(member);
 						System.out.println("resultMember 결과 : " + resultMember);
 						if (resultMember != null) {
-							resultJson.put("status", "r200");
+							resultJson.put("status", NettyServer.SUCCESS);
 						} else {
-							resultJson.put("status", "r400");
+							resultJson.put("status", NettyServer.FAIL);
 						}
 
 					} else {
-						resultJson.put("status", "r400");
+						resultJson.put("status", NettyServer.SUCCESS);
 					}
 
 					System.out.println("auth 결과 : " + resultJson);
@@ -90,10 +91,10 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 
 					if (resultMember != null) {
 						resultJson.put("id", resultMember.getId());
-						resultJson.put("status", "r200");
+						resultJson.put("status", NettyServer.SUCCESS);
 					} else {
 						resultJson.put("id", null);
-						resultJson.put("status", "r400");
+						resultJson.put("status", NettyServer.FAIL);
 					}
 
 					ctx.writeAndFlush(resultJson.toJSONString());
@@ -109,7 +110,7 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 
 					result = memberServiceImpl.signUp(member);
 
-					if ("r200".equals(result)) {
+					if ((NettyServer.SUCCESS).equals(result)) {
 						mappingMember.put(id, null);
 					}
 
@@ -149,12 +150,12 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 						System.out.println("resetResult = " + resetResult);
 
 						if (resetResult == 0) {
-							resultJson.put("status", "r400");
+							resultJson.put("status", NettyServer.FAIL);
 						} else {
-							resultJson.put("status", "r200");
+							resultJson.put("status", NettyServer.SUCCESS);
 						}
 					} else {
-						resultJson.put("status", "r400");
+						resultJson.put("status", NettyServer.FAIL);
 					}
 
 					System.out.println("resultJson : " + resultJson.toJSONString());

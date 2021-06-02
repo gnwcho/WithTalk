@@ -63,9 +63,9 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 							resultJson.put("type", type);
 							resultJson.put("method", method);
 							if (insertResult == 0) {
-								resultJson.put("status", "r400");
+								resultJson.put("status", NettyServer.FAIL);
 							} else {
-								resultJson.put("status", "r200");
+								resultJson.put("status", NettyServer.SUCCESS);
 							}
 
 							System.out.println("insertFriend 결과 : " + resultJson);
@@ -78,7 +78,7 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 
 				resultJson.put("type", type);
 				resultJson.put("method", method);
-				resultJson.put("status", "r400");
+				resultJson.put("status", NettyServer.SUCCESS);
 
 				System.out.println("insertFriend 결과 : " + resultJson);
 
@@ -97,12 +97,12 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 				resultJson.put("method", method);
 
 				if (resultMember == null) {
-					resultJson.put("status", "r400");
+					resultJson.put("status", NettyServer.FAIL);
 					resultJson.put("id", null);
 					resultJson.put("name", null);
 					resultJson.put("phoneNo", null);
 				} else {
-					resultJson.put("status", "r200");
+					resultJson.put("status", NettyServer.SUCCESS);
 					resultJson.put("id", resultMember.getId());
 					resultJson.put("name", resultMember.getName());
 					resultJson.put("phoneNo", resultMember.getPhoneNo());
@@ -144,10 +144,10 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 				System.out.println("friendJsonList : " + friendJsonList);
 
 				if (friendJsonList != null) {
-					resultJson.put("status", "r200");
+					resultJson.put("status", NettyServer.SUCCESS);
 					resultJson.put("friendList", friendJsonList);
 				} else {
-					resultJson.put("status", "r400");
+					resultJson.put("status", NettyServer.SUCCESS);
 					resultJson.put("friendList", null);
 				}
 				ctx.writeAndFlush(resultJson.toJSONString());
@@ -201,9 +201,9 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 				resultJson.put("method", method);
 
 				if (deleteResult == 0) {
-					resultJson.put("status", "r400");
+					resultJson.put("status", NettyServer.FAIL);
 				} else {
-					resultJson.put("status", "r200");
+					resultJson.put("status", NettyServer.SUCCESS);
 				}
 
 				System.out.println("deleteFriend 결과 : " + resultJson);

@@ -30,6 +30,9 @@ public class ChatHandler  extends SimpleChannelInboundHandler<String> {
 	@Autowired
 	public Map<Integer, Set<String>> chatRoomMap;
 	
+	public static final String SUCCESS = "r200";
+	public static final String FAIL = "r400";
+	
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, String msg) throws Exception {
 		JSONObject jsonObj = (JSONObject) parser.parse(msg);
