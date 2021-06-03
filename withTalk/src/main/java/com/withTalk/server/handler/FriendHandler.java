@@ -139,7 +139,7 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 					}
 				}
 				resultJson.put("type", type);
-				resultJson.put("method", "selectAllFriend");
+				resultJson.put("method", method);
 
 				System.out.println("friendJsonList : " + friendJsonList);
 
