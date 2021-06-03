@@ -6,7 +6,7 @@ import com.withTalk.server.model.ChatRoom;
 
 public interface ChatRoomService {
 		//대화방 생성
-		public String insert(ChatRoom chatRoom, List<String> receiverId) throws Exception;
+		public ChatRoom insert(ChatRoom chatRoom, List<String> receiverId) throws Exception;
 		//대화방 매핑
 		public void registerMap(int roomId, String id) throws Exception;
 		//대화방 조회
