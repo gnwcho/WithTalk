@@ -61,4 +61,10 @@ public class JoinChatRoom implements Serializable {
 	public void setMemberId(String memberId) {
 		this.memberId = memberId;
 	}
+	
+	@Override
+	public String toString() {
+		return "sequenceNo = " + this.getSequenceNo() + "|| chatRoomName : " + this.getChatRoomName() + "|| chatRoomNo : " + this.getChatRoomNo()
+		 + "|| memberId : " + this.getMemberId();
+	}
 }
