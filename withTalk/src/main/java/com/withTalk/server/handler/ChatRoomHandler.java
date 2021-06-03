@@ -81,7 +81,6 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
                resultJson.put("type", type);
                resultJson.put("method", method);
                resultJson.put("status", status);
-               resultJson.put("joinMember", receiverId);
                resultJson.put("chatRoomType", chatRoomType);
                resultJson.put("chatRoomNo", chatRoomServiceImpl.selectNo());
 

@@ -112,7 +112,8 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 				joinChatRoom.setChatRoomNo(chatRoomNo);
 
 				List<JoinChatRoom> selectByNo = joinChatRoomServiceImpl.select(joinChatRoom);
-
+				String chatRoomName = selectByNo.get(0).getChatRoomName();
+				System.out.println("chatRoomName : "  + chatRoomName);
 				idList = new ArrayList<String>();
 
 				for (int j = 0; j < selectByNo.size(); j++) {
@@ -121,6 +122,7 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 
 				row = new JSONObject();
 				row.put("chatRoomNo", chatRoomNo);
+				row.put("chatRoomName", chatRoomName);
 				row.put("memberIdList", idList);
 
 				if (idList.size() > 2) {
