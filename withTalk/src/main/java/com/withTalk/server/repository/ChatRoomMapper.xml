@@ -32,6 +32,9 @@
 		, #{userCount}
 		, #{type}
 		)
+		<selectKey keyProperty="sequenceNo" resultType="int" order="AFTER">
+			SELECT CHATROOM_SEQ.CURRVAL FROM DUAL
+		</selectKey>
 	</insert>
 	
 	<select id="select" parameterType="com.withTalk.server.model.ChatRoom" resultMap="chatRoomResultMap">

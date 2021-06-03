@@ -25,51 +25,57 @@ import io.netty.channel.SimpleChannelInboundHandler;
 @Sharable
 @Component
 public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
-   @Autowired
-   JSONParser parser;
-   @Autowired
-   public ChatRoomServiceImpl chatRoomServiceImpl;
-   @Autowired
-   public JoinChatRoomServiceImpl joinChatRoomServiceImpl;
-   @Autowired
-   private Map<String, Channel> mappingMember;
-   @Autowired
-   public Map<Integer, Set<String>> chatRoomMap;
+	@Autowired
+	JSONParser parser;
+	@Autowired
+	public ChatRoomServiceImpl chatRoomServiceImpl;
+	@Autowired
+	public JoinChatRoomServiceImpl joinChatRoomServiceImpl;
+	@Autowired
+	private Map<String, Channel> mappingMember;
+	@Autowired
+	public Map<Integer, Set<String>> chatRoomMap;
 
-   @Override
-   protected void messageReceived(ChannelHandlerContext ctx, String msg) throws Exception {
-      JSONObject jsonObj = (JSONObject) parser.parse(msg);
-      String type = (String) jsonObj.get("type");
+	@Override
+	protected void messageReceived(ChannelHandlerContext ctx, String msg) throws Exception {
+		JSONObject jsonObj = (JSONObject) parser.parse(msg);
+		String type = (String) jsonObj.get("type");
 
-      if ("chatRoom".equals(type)) {
-         ChatRoom chatRoom = new ChatRoom();
-         ChatRoom resultChatRoom = null;
+		if ("chatRoom".equals(type)) {
+			ChatRoom chatRoom = new ChatRoom();
+			ChatRoom resultChatRoom = null;
 
-         JoinChatRoom joinChatRoom = new JoinChatRoom();
-         List<JoinChatRoom> resultJoinChatRoomList = null;
+			JoinChatRoom joinChatRoom = new JoinChatRoom();
+			List<JoinChatRoom> resultJoinChatRoomList = null;
 
-         JSONObject resultJson = new JSONObject();
+			JSONObject resultJson = new JSONObject();
 
-         String method = (String) jsonObj.get("method");
+			String method = (String) jsonObj.get("method");
 
-         String result = null;
-         String status = null;
-         int no = 0;
+			String result = null;
+			String status = null;
+			int no = 0;
 
-         switch (method) {
-         // 대화방 생성
-         case "create":
-            List<String> receiverId = (List<String>) jsonObj.get("receiverId");
-            String chatRoomType = (String) jsonObj.get("chatRoomType");
+			switch (method) {
+			// 대화방 생성
+			case "create":
+				List<String> receiverId = (List<String>) jsonObj.get("receiverId");
+				String chatRoomType = (String) jsonObj.get("chatRoomType");
+				chatRoom.setType(chatRoomType);
+				chatRoom = chatRoomServiceImpl.insert(chatRoom, receiverId);
+				
+				if (chatRoom.getSequenceNo() > 0) {
+					joinChatRoom.setChatRoomName((String) jsonObj.get("chatRoomName"));
+					joinChatRoom.setChatRoomNo(chatRoomServiceImpl.selectNo());
 
-            chatRoom.setType(chatRoomType);
-            chatRoomServiceImpl.selectExistDm(chatRoom, receiverId);
-            
-            result = chatRoomServiceImpl.insert(chatRoom, receiverId);
+					String senderId = (String) jsonObj.get("senderId");
+					
+					if ("DM".equals(chatRoomType)) {
+						status = joinChatRoomServiceImpl.insert(joinChatRoom, receiverId, senderId);
+					} else {
+						status = joinChatRoomServiceImpl.insert(joinChatRoom, receiverId);
+					}
 
-            if ((NettyServer.SUCCESS).equals(result)) {
-               joinChatRoom.setChatRoomName((String) jsonObj.get("chatRoomName"));
-               joinChatRoom.setChatRoomNo(chatRoomServiceImpl.selectNo());
 
                if ("DM".equals(chatRoomType)) {
                   status = joinChatRoomServiceImpl.insert(joinChatRoom, receiverId,
@@ -78,198 +84,209 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
                   status = joinChatRoomServiceImpl.insert(joinChatRoom, receiverId);
                }
                
-               resultJson.put("type", type);
-               resultJson.put("method", method);
-               resultJson.put("status", status);
-               resultJson.put("chatRoomType", chatRoomType);
-               resultJson.put("chatRoomNo", chatRoomServiceImpl.selectNo());
+					for (String id : receiverId) {
+						Channel ch = mappingMember.get(id);
+						
+						if (ch != null) {
+							resultJson.put("type", type);
+							resultJson.put("method", method);
+							resultJson.put("status", status);
+							resultJson.put("chatRoomType", chatRoomType);
+							
+								if (id.equals(senderId)) {
+									String chatRoomName = receiverId.get(1);
+									
+									resultJson.put("chatRoomName", chatRoomName);
+									resultJson.put("chatRoomNo", chatRoomServiceImpl.selectNo());
+									
+									ch.writeAndFlush(resultJson.toJSONString());
+								} else {
+									resultJson.put("chatRoomName", senderId);
+									resultJson.put("chatRoomNo", chatRoomServiceImpl.selectNo());
+									
+									ch.writeAndFlush(resultJson.toJSONString());
+							}
+						}
+					}
+					break;
+				}
 
-               for (String id : receiverId) {
-                  Channel ch = mappingMember.get(id);
-                  if (ch != null) {
-                     ch.writeAndFlush(resultJson.toJSONString());
-                  }
-               }
+				// 대화방 조회
+			case "select":
+				no = (int) jsonObj.get("chatRoomNo");
+				chatRoom.setSequenceNo(no);
 
-               break;
-            }
+				resultChatRoom = chatRoomServiceImpl.select(chatRoom);
 
-            // 대화방 조회
-         case "select":
-            no = (int) jsonObj.get("chatRoomNo");
-            chatRoom.setSequenceNo(no);
+				joinChatRoom.setChatRoomNo(no);
 
-            resultChatRoom = chatRoomServiceImpl.select(chatRoom);
+				resultJoinChatRoomList = joinChatRoomServiceImpl.select(joinChatRoom);
+				List<String> memberIdList = new ArrayList<String>();
 
-            joinChatRoom.setChatRoomNo(no);
+				for (int i = 0; i < resultJoinChatRoomList.size(); i++) {
+					memberIdList.add(resultJoinChatRoomList.get(i).getMemberId());
+				}
 
-            resultJoinChatRoomList = joinChatRoomServiceImpl.select(joinChatRoom);
-            List<String> memberIdList = new ArrayList<String>();
+				resultJson.put("type", type);
+				resultJson.put("method", method);
 
-            for (int i = 0; i < resultJoinChatRoomList.size(); i++) {
-               memberIdList.add(resultJoinChatRoomList.get(i).getMemberId());
-            }
+				if (resultChatRoom != null && resultJoinChatRoomList != null) {
+					resultJson.put("status", NettyServer.SUCCESS);
+					resultJson.put("chatRoomNo", no);
+					resultJson.put("userCount", resultChatRoom.getUserCount());
+					resultJson.put("memberIdList", memberIdList);
+				} else {
+					resultJson.put("status", NettyServer.FAIL);
+					resultJson.put("chatRoomNo", null);
+					resultJson.put("userCount", null);
+					resultJson.put("memberIdList", null);
+				}
 
-            resultJson.put("type", type);
-            resultJson.put("method", method);
+				ctx.writeAndFlush(resultJson.toJSONString());
+				break;
 
-            if (resultChatRoom != null && resultJoinChatRoomList != null) {
-               resultJson.put("status", NettyServer.SUCCESS);
-               resultJson.put("chatRoomNo", no);
-               resultJson.put("userCount", resultChatRoom.getUserCount());
-               resultJson.put("memberIdList", memberIdList);
-            } else {
-               resultJson.put("status", NettyServer.FAIL);
-               resultJson.put("chatRoomNo", null);
-               resultJson.put("userCount", null);
-               resultJson.put("memberIdList", null);
-            }
+			case "exit":
+				resultJson.put("type", type);
+				resultJson.put("method", method);
 
-            ctx.writeAndFlush(resultJson.toJSONString());
-            break;
+				if (jsonObj.get("chatRoomNo") != null && jsonObj.get("senderId") != null) {
+					int roomNo = Integer.parseInt(String.valueOf(jsonObj.get("chatRoomNo")));
+					joinChatRoom.setMemberId((String) jsonObj.get("senderId"));
+					joinChatRoom.setChatRoomNo(roomNo);
 
-         case "exit":
-            resultJson.put("type", type);
-            resultJson.put("method", method);
+					status = joinChatRoomServiceImpl.delete(joinChatRoom);
 
-            if (jsonObj.get("chatRoomNo") != null && jsonObj.get("senderId") != null) {
-               int roomNo = Integer.parseInt(String.valueOf(jsonObj.get("chatRoomNo")));
-               joinChatRoom.setMemberId((String) jsonObj.get("senderId"));
-               joinChatRoom.setChatRoomNo(roomNo);
+					if ((NettyServer.SUCCESS).equals(status)) {
+						chatRoom.setSequenceNo(roomNo);
 
-               status = joinChatRoomServiceImpl.delete(joinChatRoom);
+						if (chatRoomServiceImpl.memberCount(chatRoom) == 1) {
+							chatRoomServiceImpl.deleteChatRoom(chatRoom);
+						} else {
+							chatRoomServiceImpl.updateUserCount(chatRoom);
+						}
+					}
 
-               if ((NettyServer.SUCCESS).equals(status)) {
-                  chatRoom.setSequenceNo(roomNo);
+					resultJson.put("status", status);
+				} else {
+					resultJson.put("status", "r400");
+				}
 
-                  if (chatRoomServiceImpl.memberCount(chatRoom) == 1) {
-                     chatRoomServiceImpl.deleteChatRoom(chatRoom);
-                  } else {
-                     chatRoomServiceImpl.updateUserCount(chatRoom);
-                  }
-               }
+				ctx.writeAndFlush(resultJson.toJSONString());
+				break;
 
-               resultJson.put("status", status);
-            } else {
-               resultJson.put("status", "r400");
-            }
+			// 대화방 검색
+			case "search": ////////////////////////////////////
+				// To DO
+				System.out.println("대화방 검색 들어온 요청 : " + jsonObj);
+				joinChatRoom.setChatRoomName((String) jsonObj.get("chatRoomName"));
+				joinChatRoom.setMemberId((String) jsonObj.get("senderId"));
+				resultJoinChatRoomList = joinChatRoomServiceImpl.select(joinChatRoom);
+				System.out.println("resultJoinChatRoomList 결과 : " + resultJoinChatRoomList);
 
-            ctx.writeAndFlush(resultJson.toJSONString());
-            break;
+				List<JSONObject> searchJoinChatRoomList = new ArrayList<JSONObject>();
+				JSONObject searchJoinChatRoom = null;
 
-         // 대화방 검색
-         case "search": ////////////////////////////////////
-            // To DO
-            System.out.println("대화방 검색 들어온 요청 : " + jsonObj);
-            joinChatRoom.setChatRoomName((String) jsonObj.get("chatRoomName"));
-            joinChatRoom.setMemberId((String) jsonObj.get("senderId"));
-            resultJoinChatRoomList = joinChatRoomServiceImpl.select(joinChatRoom);
-            System.out.println("resultJoinChatRoomList 결과 : " + resultJoinChatRoomList);
+				resultJson.put("type", type);
+				resultJson.put("method", method);
 
-            List<JSONObject> searchJoinChatRoomList = new ArrayList<JSONObject>();
-            JSONObject searchJoinChatRoom = null;
+				if (resultJoinChatRoomList != null) {
+					for (int i = 0; i < resultJoinChatRoomList.size(); i++) {
+						searchJoinChatRoom = new JSONObject();
 
-            resultJson.put("type", type);
-            resultJson.put("method", method);
+						searchJoinChatRoom.put("chatRoomNo", resultJoinChatRoomList.get(i).getChatRoomNo());
+						searchJoinChatRoom.put("chatRoomName", resultJoinChatRoomList.get(i).getChatRoomName());
 
-            if (resultJoinChatRoomList != null) {
-               for (int i = 0; i < resultJoinChatRoomList.size(); i++) {
-                  searchJoinChatRoom = new JSONObject();
+						searchJoinChatRoomList.add(searchJoinChatRoom);
+					}
 
-                  searchJoinChatRoom.put("chatRoomNo", resultJoinChatRoomList.get(i).getChatRoomNo());
-                  searchJoinChatRoom.put("chatRoomName", resultJoinChatRoomList.get(i).getChatRoomName());
+					resultJson.put("status", NettyServer.SUCCESS);
+					resultJson.put("searchChatRoomList", searchJoinChatRoomList);
+				} else {
+					resultJson.put("status", NettyServer.FAIL);
+					resultJson.put("searchChatRoomList", null);
+				}
 
-                  searchJoinChatRoomList.add(searchJoinChatRoom);
-               }
+				System.out.println("searchJoinChatRoom 결과 : " + resultJson);
+				ctx.writeAndFlush(resultJson.toJSONString());
+				break;
 
-               resultJson.put("status", NettyServer.SUCCESS);
-               resultJson.put("searchChatRoomList", searchJoinChatRoomList);
-            } else {
-               resultJson.put("status", NettyServer.FAIL);
-               resultJson.put("searchChatRoomList", null);
-            }
+			// 삭제 필요
+			case "checkExistChatRoom":
+				resultJson.put("type", type);
+				resultJson.put("method", method);
+				resultJson.put("status", NettyServer.FAIL);
+				resultJson.put("chatRoomNo", -1);
 
-            System.out.println("searchJoinChatRoom 결과 : " + resultJson);
-            ctx.writeAndFlush(resultJson.toJSONString());
-            break;
+				System.out.println("checkExChatRoom 결과 : " + resultJson);
+				ctx.writeAndFlush(resultJson.toJSONString());
+				break;
 
-         // 삭제 필요
-         case "checkExistChatRoom":
-            resultJson.put("type", type);
-            resultJson.put("method", method);
-            resultJson.put("status", NettyServer.FAIL);
-            resultJson.put("chatRoomNo", -1);
+			// 모든 참여 대화방 조회
+			case "selectAllChatRoom":
+				String id = (String) jsonObj.get("id");
+				joinChatRoom.setMemberId(id);
 
-            System.out.println("checkExChatRoom 결과 : " + resultJson);
-            ctx.writeAndFlush(resultJson.toJSONString());
-            break;
+				List<JoinChatRoom> selectByIdList = joinChatRoomServiceImpl.selectDistinctNo(joinChatRoom);
 
-         // 모든 참여 대화방 조회
-         case "selectAllChatRoom":
-            String id = (String) jsonObj.get("id");
-            joinChatRoom.setMemberId(id);
+				resultJson.put("type", type);
+				resultJson.put("method", method);
 
-            List<JoinChatRoom> selectByIdList = joinChatRoomServiceImpl.selectDistinctNo(joinChatRoom);
+				if (selectByIdList != null) {
+					JSONArray chatRoomList = joinChatRoomServiceImpl.selectAllChatRoom(selectByIdList);
 
-            resultJson.put("type", type);
-            resultJson.put("method", method);
+					if (chatRoomList != null) {
+						resultJson.put("status", NettyServer.SUCCESS);
+						resultJson.put("chatRoomList", chatRoomList);
+					}
+				} else {
+					resultJson.put("status", NettyServer.FAIL);
+					resultJson.put("chatRoomList", null);
+				}
 
-            if (selectByIdList != null) {
-               JSONArray chatRoomList = joinChatRoomServiceImpl.selectAllChatRoom(selectByIdList);
+				System.out.println("selectAllChatRoom 결과 : " + resultJson);
+				ctx.writeAndFlush(resultJson.toJSONString());
+				break;
 
-               if (chatRoomList != null) {
-                  resultJson.put("status", NettyServer.SUCCESS);
-                  resultJson.put("chatRoomList", chatRoomList);
-               }
-            } else {
-               resultJson.put("status", NettyServer.FAIL);
-               resultJson.put("chatRoomList", null);
-            }
+			case "updateName":
+				if (jsonObj.get("chatRoomNo") != null && jsonObj.get("newName") != null
+						&& jsonObj.get("senderId") != null) {
+					int chatRoomNo = Integer.parseInt(String.valueOf(jsonObj.get("chatRoomNo")));
+					String chatRoomName = (String) jsonObj.get("newName");
+					String memberId = (String) jsonObj.get("senderId");
 
-            System.out.println("selectAllChatRoom 결과 : " + resultJson);
-            ctx.writeAndFlush(resultJson.toJSONString());
-            break;
-            
-         case "updateName":
-            if (jsonObj.get("chatRoomNo") != null && jsonObj.get("newName") != null
-                  && jsonObj.get("senderId") != null) {
-               int chatRoomNo = Integer.parseInt(String.valueOf(jsonObj.get("chatRoomNo")));
-               String chatRoomName = (String) jsonObj.get("newName");
-               String memberId = (String) jsonObj.get("senderId");
+					joinChatRoom = new JoinChatRoom();
 
-               joinChatRoom = new JoinChatRoom();
+					joinChatRoom.setChatRoomNo(chatRoomNo);
+					joinChatRoom.setChatRoomName(chatRoomName);
+					joinChatRoom.setMemberId(memberId);
 
-               joinChatRoom.setChatRoomNo(chatRoomNo);
-               joinChatRoom.setChatRoomName(chatRoomName);
-               joinChatRoom.setMemberId(memberId);
+					resultJson.put("type", chatRoom);
+					resultJson.put("method", method);
 
-               resultJson.put("type", chatRoom);
-               resultJson.put("method", method);
+					if (joinChatRoomServiceImpl.update(joinChatRoom) == 1) {
+						resultJson.put("status", NettyServer.SUCCESS);
+						resultJson.put("chatRoomNo", chatRoomNo);
+						resultJson.put("newName", chatRoomName);
 
-               if (joinChatRoomServiceImpl.update(joinChatRoom) == 1) {
-                  resultJson.put("status", NettyServer.SUCCESS);
-                  resultJson.put("chatRoomNo", chatRoomNo);
-                  resultJson.put("newName", chatRoomName);
-                  
-                  System.out.println("updateName 결과 : " + resultJson);
-                  ctx.writeAndFlush(resultJson.toJSONString());
-                  break;
-               }
+						System.out.println("updateName 결과 : " + resultJson);
+						ctx.writeAndFlush(resultJson.toJSONString());
+						break;
+					}
 
-            }
-               resultJson.put("status", NettyServer.FAIL);
-               resultJson.put("chatRoomNo", -1);
-               resultJson.put("newName", null);
-            
-            System.out.println("updateName 결과 : " + resultJson);
-            ctx.writeAndFlush(resultJson.toJSONString());
-            break;
-            
-         default:
-            System.out.println("not found method...");
-         }
-      } else {
-         ctx.fireChannelRead(msg);
-      }
-   }
+				}
+				resultJson.put("status", NettyServer.FAIL);
+				resultJson.put("chatRoomNo", -1);
+				resultJson.put("newName", null);
+
+				System.out.println("updateName 결과 : " + resultJson);
+				ctx.writeAndFlush(resultJson.toJSONString());
+				break;
+
+			default:
+				System.out.println("not found method...");
+			}
+		} else {
+			ctx.fireChannelRead(msg);
+		}
+	}
 }

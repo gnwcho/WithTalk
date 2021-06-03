@@ -25,7 +25,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 	
 	//대화방 생성
 	@Override
-	public String insert(ChatRoom chatRoom, List<String> receiverId) throws Exception{
+	public ChatRoom insert(ChatRoom chatRoom, List<String> receiverId) throws Exception{
 		chatRoom.setUserCount(receiverId.size());
 		
 		int insertResult = chatRoomMapper.insert(chatRoom);
@@ -41,14 +41,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 			
 			int no = this.selectNo();
 			chatRoomMap.put(no, receiverIdSet);
-			System.out.println(no);
-			
-			result = "r200";
-		} else {
-			result = "r400";
-		}
+		} 
 		
-		return result;
+		return chatRoom;
 	}
 	
 	//대화방Map에 등록
