@@ -63,48 +63,47 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 				String chatRoomType = (String) jsonObj.get("chatRoomType");
 				chatRoom.setType(chatRoomType);
 				chatRoom = chatRoomServiceImpl.insert(chatRoom, receiverId);
-				
+
 				if (chatRoom.getSequenceNo() > 0) {
 					joinChatRoom.setChatRoomName((String) jsonObj.get("chatRoomName"));
 					joinChatRoom.setChatRoomNo(chatRoomServiceImpl.selectNo());
 
 					String senderId = (String) jsonObj.get("senderId");
-					
+
 					if ("DM".equals(chatRoomType)) {
 						status = joinChatRoomServiceImpl.insert(joinChatRoom, receiverId, senderId);
 					} else {
 						status = joinChatRoomServiceImpl.insert(joinChatRoom, receiverId);
 					}
 
-
-               if ("DM".equals(chatRoomType)) {
-                  status = joinChatRoomServiceImpl.insert(joinChatRoom, receiverId,
-                        (String) jsonObj.get("senderId"));
-               } else {
-                  status = joinChatRoomServiceImpl.insert(joinChatRoom, receiverId);
-               }
-               
 					for (String id : receiverId) {
 						Channel ch = mappingMember.get(id);
-						
+
 						if (ch != null) {
 							resultJson.put("type", type);
 							resultJson.put("method", method);
 							resultJson.put("status", status);
 							resultJson.put("chatRoomType", chatRoomType);
-							
+
+							if ("DM".equals(chatRoomType)) {
 								if (id.equals(senderId)) {
 									String chatRoomName = receiverId.get(1);
-									
+
 									resultJson.put("chatRoomName", chatRoomName);
-									resultJson.put("chatRoomNo", chatRoomServiceImpl.selectNo());
-									
+									resultJson.put("chatRoomNo", chatRoom.getSequenceNo());
+
 									ch.writeAndFlush(resultJson.toJSONString());
 								} else {
 									resultJson.put("chatRoomName", senderId);
-									resultJson.put("chatRoomNo", chatRoomServiceImpl.selectNo());
-									
+									resultJson.put("chatRoomNo", chatRoom.getSequenceNo());
+
 									ch.writeAndFlush(resultJson.toJSONString());
+								}
+							} else {
+								resultJson.put("chatRoomName", joinChatRoom.getChatRoomName());
+								resultJson.put("chatRoomNo", chatRoom.getSequenceNo());
+								
+								ch.writeAndFlush(resultJson.toJSONString());
 							}
 						}
 					}
