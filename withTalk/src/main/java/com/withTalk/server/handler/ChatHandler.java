@@ -64,6 +64,7 @@ public class ChatHandler  extends SimpleChannelInboundHandler<String> {
 						if (mappingMember.get(receiveId) != null) {
 							resultJson.put("type", type);
 							resultJson.put("method", method);
+							resultJson.put("seqNo", message.getSequenceNo());
 							resultJson.put("chatRoomNo", chatRoomNo);
 							resultJson.put("contents", message.getContents());
 							resultJson.put("senderId", message.getSenderId());
