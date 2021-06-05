@@ -78,11 +78,6 @@ public class NettyServer {
 				// 방 id에 속한 회원 찾기
 				joinChatRoomList = joinChatRoomMapper.selectMemberByRoomId(room);
 				
-				// 방에 속한 회원 출력 test
-				/*for(int i = 0; i < joinChatRoomList.size(); i++) {
-					System.out.println(room.getSequenceNo() + ": " + joinChatRoomList.get(i));
-				}*/
-				
 				setId = new HashSet<>();
 				for (String participationId : joinChatRoomList) {
 					setId.add(participationId);
@@ -91,12 +86,12 @@ public class NettyServer {
 				chatRoomMap.put(room.getSequenceNo(), setId);
 			}
 			
-			Set<Integer> test = chatRoomMap.keySet();
+			/*Set<Integer> test = chatRoomMap.keySet();
 			Iterator<Integer> it= test.iterator();
 			while (it.hasNext()) {
 				int roomNo = it.next();
 				System.out.println(roomNo + ":" + chatRoomMap.get(roomNo));
-			}
+			}*/
 			
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.withTalk.server.model.JoinChatRoom;
+import com.withTalk.server.model.Member;
 import com.withTalk.server.repository.JoinChatRoomMapper;
+import com.withTalk.server.repository.MemberMapper;
 
 @Service
 public class JoinChatRoomServiceImpl implements JoinChatRoomService {
@@ -19,6 +21,8 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 	JoinChatRoomServiceImpl joinChatRoomServiceImpl;
 	@Autowired
 	JoinChatRoomMapper joinChatRoomMapper;
+	@Autowired
+	MemberMapper memberMapper;
 	@Autowired
 	public Map<Integer, Set<String>> chatRoomMap;
 
@@ -50,13 +54,21 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 		try {
 			for (String id : receiverId) {
 				if (id.equals(senderId)) {
-					joinChatRoom.setChatRoomName(receiverId.get(1));
+					Member member = new Member();
+					member.setId(receiverId.get(1));
+					member = memberMapper.select(member);
+					joinChatRoom.setChatRoomName(member.getName());
 					joinChatRoom.setMemberId(id);
+					System.out.println(joinChatRoom.getChatRoomName());
 					
 					joinChatRoomMapper.insert(joinChatRoom);
 				} else {
-					joinChatRoom.setChatRoomName(senderId);
+					Member member = new Member();
+					member.setId(senderId);
+					member = memberMapper.select(member);
+					joinChatRoom.setChatRoomName(member.getName());
 					joinChatRoom.setMemberId(id);
+					System.out.println(joinChatRoom.getChatRoomName());
 					
 					joinChatRoomMapper.insert(joinChatRoom);
 				}
