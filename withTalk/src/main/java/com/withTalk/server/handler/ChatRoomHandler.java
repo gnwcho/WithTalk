@@ -13,9 +13,12 @@ import org.springframework.stereotype.Component;
 
 import com.withTalk.server.model.ChatRoom;
 import com.withTalk.server.model.JoinChatRoom;
+import com.withTalk.server.model.Member;
 import com.withTalk.server.nettyserver.NettyServer;
 import com.withTalk.server.service.ChatRoomServiceImpl;
 import com.withTalk.server.service.JoinChatRoomServiceImpl;
+import com.withTalk.server.service.MemberService;
+import com.withTalk.server.service.MemberServiceImpl;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -35,6 +38,8 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 	private Map<String, Channel> mappingMember;
 	@Autowired
 	public Map<Integer, Set<String>> chatRoomMap;
+	@Autowired
+	public MemberServiceImpl memberServiceImpl;
 
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, String msg) throws Exception {
@@ -88,13 +93,20 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 							if ("DM".equals(chatRoomType)) {
 								if (id.equals(senderId)) {
 									String chatRoomName = receiverId.get(1);
+									Member member = new Member();
+									member.setId(receiverId.get(1));
+									member = memberServiceImpl.searchMemberInfo(member);
 
-									resultJson.put("chatRoomName", chatRoomName);
+									resultJson.put("chatRoomName", member.getName());
 									resultJson.put("chatRoomNo", chatRoom.getSequenceNo());
 
 									ch.writeAndFlush(resultJson.toJSONString());
 								} else {
-									resultJson.put("chatRoomName", senderId);
+									Member member = new Member();
+									member.setId(senderId);
+									member = memberServiceImpl.searchMemberInfo(member);
+									
+									resultJson.put("chatRoomName", member.getName());
 									resultJson.put("chatRoomNo", chatRoom.getSequenceNo());
 
 									ch.writeAndFlush(resultJson.toJSONString());
