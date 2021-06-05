@@ -70,6 +70,8 @@ public class ChatHandler  extends SimpleChannelInboundHandler<String> {
 							resultJson.put("senderId", message.getSenderId());
 							resultJson.put("sendTime", message.getSendTime());
 							
+							System.out.println("sendChat 결과 : " + resultJson);
+							
 							mappingMember.get(receiveId).writeAndFlush(resultJson.toJSONString());
 						}
 					}
