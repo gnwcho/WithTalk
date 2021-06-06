@@ -3,15 +3,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper
-	namespace="com.withTalk.server.repository.JoinChatRoomMapper">
-	<resultMap id="joinChatRoomResultMap"
-		type="com.withTalk.server.model.JoinChatRoom">
+<mapper namespace="com.withTalk.server.repository.JoinChatRoomMapper"> 
+	<resultMap id="joinChatRoomResultMap" type="com.withTalk.server.model.JoinChatRoom">
 		<result column="SEQUENCE_NO" property="sequenceNo" />
 		<result column="CHATROOM_NAME" property="chatRoomName" />
 		<result column="JOIN_TIME" property="joinTime" />
 		<result column="CHATROOM_NO" property="chatRoomNo" />
 		<result column="MEMBER_ID" property="memberId" />
+	</resultMap>
+	
+	<resultMap id="messageResultMap" type="com.withTalk.server.model.Message">
+		<result column="SEQUENCE_NO" property="sequenceNo" />
+		<result column="SEND_TIME" property="sendTime" />
+		<result column="CONTENTS" property="contents" />
+		<result column="CHATROOM_NO" property="chatRoomNo" />
+		<result column="SENDER_ID" property="senderId" />
 	</resultMap>
 
 	<sql id="whereSql">
@@ -67,13 +73,21 @@
 		WHERE MEMBER_ID = #{memberId}
 	</select>
 	
+	<select id="selectById" parameterType="com.withTalk.server.model.JoinChatRoom" resultMap="messageResultMap">
+		select j.chatroom_no, to_char(max(m.send_time), 'HH24:mi') as send_time
+		from join_chatroom j join message m
+		on j.chatRoom_no=m.chatroom_no
+		where j.member_id=#{memberId}
+		group by j.chatroom_no
+		order by send_time desc
+	</select>
+	
 	<update id="update" parameterType="com.withTalk.server.model.ChatRoom">
 		UPDATE JOIN_CHATROOM
 		SET CHATROOM_NAME=#{chatRoomName}
 		WHERE MEMBER_ID=#{memberId} AND CHATROOM_NO=#{chatRoomNo}
 	</update>
 	
-
 	<delete id="delete"
 		parameterType="com.withTalk.server.model.JoinChatRoom">
 		DELETE FROM JOIN_CHATROOM

@@ -14,10 +14,10 @@ import org.springframework.stereotype.Component;
 import com.withTalk.server.model.ChatRoom;
 import com.withTalk.server.model.JoinChatRoom;
 import com.withTalk.server.model.Member;
+import com.withTalk.server.model.Message;
 import com.withTalk.server.nettyserver.NettyServer;
 import com.withTalk.server.service.ChatRoomServiceImpl;
 import com.withTalk.server.service.JoinChatRoomServiceImpl;
-import com.withTalk.server.service.MemberService;
 import com.withTalk.server.service.MemberServiceImpl;
 
 import io.netty.channel.Channel;
@@ -89,6 +89,7 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 							resultJson.put("method", method);
 							resultJson.put("status", status);
 							resultJson.put("chatRoomType", chatRoomType);
+							resultJson.put("senderId", senderId);
 
 							if ("DM".equals(chatRoomType)) {
 								if (id.equals(senderId)) {
@@ -96,9 +97,13 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 									Member member = new Member();
 									member.setId(receiverId.get(1));
 									member = memberServiceImpl.searchMemberInfo(member);
-
+									
+									System.out.println("=================================================================");
+									System.out.println("chatRoomName : " + member.getName());
 									resultJson.put("chatRoomName", member.getName());
 									resultJson.put("chatRoomNo", chatRoom.getSequenceNo());
+									
+									System.out.println("대화방 생성 결과 : " + resultJson);
 
 									ch.writeAndFlush(resultJson.toJSONString());
 								} else {
@@ -108,6 +113,9 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 									
 									resultJson.put("chatRoomName", member.getName());
 									resultJson.put("chatRoomNo", chatRoom.getSequenceNo());
+									
+									System.out.println("=====================================222222222=========22");
+									System.out.println("chatRoomName : " + member.getName());
 
 									ch.writeAndFlush(resultJson.toJSONString());
 								}
@@ -221,29 +229,26 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 				ctx.writeAndFlush(resultJson.toJSONString());
 				break;
 
-			// 삭제 필요
-			case "checkExistChatRoom":
-				resultJson.put("type", type);
-				resultJson.put("method", method);
-				resultJson.put("status", NettyServer.FAIL);
-				resultJson.put("chatRoomNo", -1);
-
-				System.out.println("checkExChatRoom 결과 : " + resultJson);
-				ctx.writeAndFlush(resultJson.toJSONString());
-				break;
-
-			// 모든 참여 대화방 조회
+			//모든 참여 대화방 조회
 			case "selectAllChatRoom":
 				String id = (String) jsonObj.get("id");
 				joinChatRoom.setMemberId(id);
 
-				List<JoinChatRoom> selectByIdList = joinChatRoomServiceImpl.selectDistinctNo(joinChatRoom);
+				List<Message> selectByIdList = joinChatRoomServiceImpl.selectById(joinChatRoom);
+				System.out.println("selectByIdList : " + selectByIdList);
+				List<Integer> noList = new ArrayList<Integer>();
+				List<String> timeList = new ArrayList<String>();
+				
+				for (int i = 0; i < selectByIdList.size(); i++) {
+					noList.add(selectByIdList.get(i).getChatRoomNo());
+					timeList.add(selectByIdList.get(i).getSendTime());
+				}
 
 				resultJson.put("type", type);
 				resultJson.put("method", method);
 
 				if (selectByIdList != null) {
-					JSONArray chatRoomList = joinChatRoomServiceImpl.selectAllChatRoom(selectByIdList);
+					JSONArray chatRoomList = joinChatRoomServiceImpl.selectAllChatRoom(id, noList, timeList);
 
 					if (chatRoomList != null) {
 						resultJson.put("status", NettyServer.SUCCESS);

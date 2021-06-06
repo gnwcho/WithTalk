@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.withTalk.server.model.JoinChatRoom;
 import com.withTalk.server.model.Member;
+import com.withTalk.server.model.Message;
 import com.withTalk.server.repository.JoinChatRoomMapper;
 import com.withTalk.server.repository.MemberMapper;
 
@@ -60,7 +61,7 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 					joinChatRoom.setChatRoomName(member.getName());
 					joinChatRoom.setMemberId(id);
 					System.out.println(joinChatRoom.getChatRoomName());
-					
+
 					joinChatRoomMapper.insert(joinChatRoom);
 				} else {
 					Member member = new Member();
@@ -69,7 +70,7 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 					joinChatRoom.setChatRoomName(member.getName());
 					joinChatRoom.setMemberId(id);
 					System.out.println(joinChatRoom.getChatRoomName());
-					
+
 					joinChatRoomMapper.insert(joinChatRoom);
 				}
 			}
@@ -79,9 +80,9 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 
 		return "r200";
 	}
-	
-	//참여 대화방 이름 변경
-	public int update (JoinChatRoom joinChatRoom) throws Exception {
+
+	// 참여 대화방 이름 변경
+	public int update(JoinChatRoom joinChatRoom) throws Exception {
 		return joinChatRoomMapper.update(joinChatRoom);
 	}
 
@@ -108,48 +109,61 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 		return joinChatRoomMapper.selectDistinctNo(joinChatRoom);
 	}
 
+	@Override
+	// 메시지 형식 반환 id로 검색
+	public List<Message> selectById(JoinChatRoom joinChatRoom) throws Exception {
+		return joinChatRoomMapper.selectById(joinChatRoom);
+	}
+
 	// 모든 참여 대화방 조회
 	@Override
-	public JSONArray selectAllChatRoom(List<JoinChatRoom> joinChatRoomList) throws Exception {
-		List<JoinChatRoom> selectByIdList = joinChatRoomList;
+	public JSONArray selectAllChatRoom(String id, List<Integer> noList, List<String> timeList) throws Exception {
 		JSONArray chatRoomList = new JSONArray();
 		JSONObject row = null;
 		List<String> idList = null;
+		String chatRoomName = null;
 
-		if (selectByIdList != null) {
-			for (int i = 0; i < selectByIdList.size(); i++) {
-				int chatRoomNo = selectByIdList.get(i).getChatRoomNo();
-				JoinChatRoom joinChatRoom = new JoinChatRoom();
-				joinChatRoom.setChatRoomNo(chatRoomNo);
+		for (int i = 0; i < noList.size(); i++) {
+			System.out.println("noList 시작!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			System.out.println("noList : " + noList);
 
-				List<JoinChatRoom> selectByNo = joinChatRoomServiceImpl.select(joinChatRoom);
-				String chatRoomName = selectByNo.get(0).getChatRoomName();
-				System.out.println("chatRoomName : "  + chatRoomName);
-				idList = new ArrayList<String>();
+			int chatRoomNo = noList.get(i);
+			String sendTime = timeList.get(i);
 
-				for (int j = 0; j < selectByNo.size(); j++) {
-					idList.add(selectByNo.get(j).getMemberId());
+			JoinChatRoom joinChatRoom = new JoinChatRoom();
+			joinChatRoom.setChatRoomNo(chatRoomNo);
+
+			List<JoinChatRoom> selectByNo = joinChatRoomServiceImpl.select(joinChatRoom);
+			System.out.println("==========================================================");
+			System.out.println("selectByNo : " + selectByNo);
+
+			idList = new ArrayList<String>();
+
+			for (int j = 0; j < selectByNo.size(); j++) {
+				idList.add(selectByNo.get(j).getMemberId());
+				if ((selectByNo.get(j).getMemberId()).equals(id)) {
+					chatRoomName = selectByNo.get(j).getChatRoomName();
+
+					row = new JSONObject();
+					row.put("chatRoomNo", chatRoomNo);
+					row.put("chatRoomName", chatRoomName);
+					row.put("memberIdList", idList);
+					row.put("sendTime", sendTime);
+
+					if (idList.size() > 2) {
+						row.put("chatRoomType", "GM");
+					} else {
+						row.put("chatRoomType", "DM");
+					}
+
+					chatRoomList.add(row);
 				}
-
-				row = new JSONObject();
-				row.put("chatRoomNo", chatRoomNo);
-				row.put("chatRoomName", chatRoomName);
-				row.put("memberIdList", idList);
-
-				if (idList.size() > 2) {
-					row.put("chatRoomType", "GM");
-				} else {
-					row.put("chatRoomType", "DM");
-				}
-
-				chatRoomList.add(row);
 			}
-			
-			return chatRoomList;
 		}
-		
-		else {
-			return null;
-		}
+
+		System.out.println("chatRoomName select에서 가져오기 : " + chatRoomName);
+
+		return chatRoomList;
+
 	}
 }

@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.withTalk.server.model.ChatRoom;
 import com.withTalk.server.model.JoinChatRoom;
+import com.withTalk.server.model.Message;
 
 @Mapper
 public interface JoinChatRoomMapper {
@@ -23,4 +24,6 @@ public interface JoinChatRoomMapper {
 	public List<JoinChatRoom> selectDistinctNo (JoinChatRoom joinChatRoom) throws Exception;
 	//참여 대화방 이름 변경
 	public int update (JoinChatRoom joinChatRoom) throws Exception;
+	//메시지 형식 반환 id로 검색
+	public List<Message> selectById (JoinChatRoom joinChatRoom) throws Exception;
 }

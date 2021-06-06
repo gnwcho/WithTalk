@@ -4,8 +4,8 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.withTalk.server.repository.MessageMapper">
-	<resultMap id="memberResultMap"
-		type="com.withTalk.server.model.Member">
+	<resultMap id="messageResultMap"
+		type="com.withTalk.server.model.Message">
 		<result column="SEQUENCE_NO" property="sequenceNo" />
 		<result column="SEND_TIME" property="sendTime" />
 		<result column="CONTENTS" property="contents" />
@@ -39,7 +39,7 @@
 		INSERT INTO MESSAGE
 		VALUES(
 		MESSAGE_SEQ.NEXTVAL
-		, SYSDATE
+		, SYSTIMESTAMP
 		, #{contents}
 		, #{chatRoomNo}
 		, #{senderId}
@@ -52,7 +52,7 @@
 	<select id="selectTime"
 		parameterType="com.withTalk.server.model.Message"
 		resultType="String">
-		SELECT TO_CHAR(SEND_TIME, 'YYYY:MM:DD:hh:mm')
+		SELECT TO_CHAR(SEND_TIME, 'hh24:mi')
 		FROM MESSAGE
 		WHERE SEQUENCE_NO=#{sequenceNo}
 	</select>
