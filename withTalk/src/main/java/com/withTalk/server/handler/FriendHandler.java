@@ -43,9 +43,8 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 
 			JSONObject resultJson = new JSONObject();
 
-			String result = null;
-
 			String method = (String) jsonObj.get("method");
+			String result = null;
 
 			switch (method) {
 			// 친구 등록
@@ -68,30 +67,23 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 								resultJson.put("status", NettyServer.SUCCESS);
 							}
 
-							System.out.println("insertFriend 결과 : " + resultJson);
-
 							ctx.writeAndFlush(resultJson.toJSONString());
 							break;
 						}
 					}
 				}
-
 				resultJson.put("type", type);
 				resultJson.put("method", method);
 				resultJson.put("status", NettyServer.SUCCESS);
-
-				System.out.println("insertFriend 결과 : " + resultJson);
 
 				ctx.writeAndFlush(resultJson.toJSONString());
 				break;
 
 			// 친구 검색
 			case "searchFriend":
-				System.out.println("selectFriend 들어옴=============================================== ");
 				member.setPhoneNo((String) jsonObj.get("phoneNo"));
 
 				resultMember = friendServiceImpl.search(member);
-				System.out.println("결과 : " + resultMember);
 
 				resultJson.put("type", type);
 				resultJson.put("method", method);
@@ -108,14 +100,11 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 					resultJson.put("phoneNo", resultMember.getPhoneNo());
 				}
 
-				System.out.println("searchFriend 검색 결과 : " + resultJson);
-
 				ctx.writeAndFlush(resultJson.toJSONString());
 				break;
 
 			// 친구 목록 조회
 			case "selectAllFriend":
-				System.out.println("selectAllFriend 들어옴=============================================== ");
 				friend.setMemberId((String) jsonObj.get("id"));
 
 				List<Friend> findIdListFriend = new ArrayList<Friend>();
@@ -141,8 +130,6 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 				resultJson.put("type", type);
 				resultJson.put("method", method);
 
-				System.out.println("friendJsonList : " + friendJsonList);
-
 				if (friendJsonList != null) {
 					resultJson.put("status", NettyServer.SUCCESS);
 					resultJson.put("friendList", friendJsonList);
@@ -155,7 +142,6 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 
 			// 등록된 친구 검색
 			case "searchRegistFriend":
-				System.out.println("searchRegistFriend 들어온 요청 : " + jsonObj);
 				member.setName((String) jsonObj.get("searchName"));
 				member.setId((String) jsonObj.get("senderId"));
 
@@ -184,7 +170,6 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 					resultJson.put("registFriendList", null);
 				}
 
-				System.out.println("searchRegistFriend 결과 : " + resultJson);
 				ctx.writeAndFlush(resultJson.toJSONString());
 				break;
 
@@ -192,8 +177,6 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 			case "delete":
 				friend.setMemberId((String) jsonObj.get("memberId"));
 				friend.setFriendId((String) jsonObj.get("friendId"));
-
-				System.out.println("deleteFriend 들어온 요청 : " + friend.getFriendId() + "||" + friend.getMemberId());
 
 				int deleteResult = friendServiceImpl.delete(friend);
 
@@ -205,8 +188,6 @@ public class FriendHandler extends SimpleChannelInboundHandler<String> {
 				} else {
 					resultJson.put("status", NettyServer.SUCCESS);
 				}
-
-				System.out.println("deleteFriend 결과 : " + resultJson);
 
 				ctx.writeAndFlush(resultJson.toJSONString());
 				break;

@@ -18,5 +18,5 @@ public interface MemberMapper {
 
 	public Member select(Member member) throws Exception;
 
-	public void update(Member member) throws Exception;
+	public int update(Member member) throws Exception;
 }

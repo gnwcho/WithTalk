@@ -53,11 +53,6 @@
 		FROM DUAL
 	</select>
 	
-	<select id="test" resultType="int">
-		SELECT CHATROOM_SEQ.NEXTVAL
-		FROM DUAL
-	</select>
-	
 	<update id="updateCount"
 		parameterType="com.withTalk.server.model.ChatRoom">
 		UPDATE CHATROOM

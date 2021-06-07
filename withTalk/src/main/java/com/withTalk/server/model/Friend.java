@@ -41,6 +41,7 @@ public class Friend implements Serializable{
 		this.friendId = friendId;
 	}
 	
+	@Override
 	public String toString() {
 		return "memberId : " + this.getMemberId() + " || friendId : " + this.getFriendId();
 	}

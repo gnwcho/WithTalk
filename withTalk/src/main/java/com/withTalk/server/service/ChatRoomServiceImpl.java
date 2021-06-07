@@ -78,12 +78,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 		return no;
 	}
 
-	@Override
-	public int test() throws Exception {
-		return chatRoomMapper.test();
-		
-	}
-	
 	//대화방 인원 변경
 	@Override
 	public void updateUserCount(ChatRoom chatRoom) throws Exception {
@@ -96,11 +90,5 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 		int result = chatRoomMapper.selectCount(chatRoom);
 		
 		return result;
-	}
-
-
-	public boolean selectExistDm(ChatRoom chatRoom, List<String> receiverId) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
 	}
 }

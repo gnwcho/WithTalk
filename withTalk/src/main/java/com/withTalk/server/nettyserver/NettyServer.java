@@ -85,14 +85,6 @@ public class NettyServer {
 				
 				chatRoomMap.put(room.getSequenceNo(), setId);
 			}
-			
-			/*Set<Integer> test = chatRoomMap.keySet();
-			Iterator<Integer> it= test.iterator();
-			while (it.hasNext()) {
-				int roomNo = it.next();
-				System.out.println(roomNo + ":" + chatRoomMap.get(roomNo));
-			}*/
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -60,7 +60,6 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 					member = memberMapper.select(member);
 					joinChatRoom.setChatRoomName(member.getName());
 					joinChatRoom.setMemberId(id);
-					System.out.println(joinChatRoom.getChatRoomName());
 
 					joinChatRoomMapper.insert(joinChatRoom);
 				} else {
@@ -69,7 +68,6 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 					member = memberMapper.select(member);
 					joinChatRoom.setChatRoomName(member.getName());
 					joinChatRoom.setMemberId(id);
-					System.out.println(joinChatRoom.getChatRoomName());
 
 					joinChatRoomMapper.insert(joinChatRoom);
 				}
@@ -124,9 +122,6 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 		String chatRoomName = null;
 
 		for (int i = 0; i < noList.size(); i++) {
-			System.out.println("noList 시작!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			System.out.println("noList : " + noList);
-
 			int chatRoomNo = noList.get(i);
 			String sendTime = timeList.get(i);
 
@@ -134,8 +129,6 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 			joinChatRoom.setChatRoomNo(chatRoomNo);
 
 			List<JoinChatRoom> selectByNo = joinChatRoomServiceImpl.select(joinChatRoom);
-			System.out.println("==========================================================");
-			System.out.println("selectByNo : " + selectByNo);
 
 			idList = new ArrayList<String>();
 
@@ -160,10 +153,7 @@ public class JoinChatRoomServiceImpl implements JoinChatRoomService {
 				}
 			}
 		}
-
-		System.out.println("chatRoomName select에서 가져오기 : " + chatRoomName);
-
+		
 		return chatRoomList;
-
 	}
 }

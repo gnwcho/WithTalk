@@ -29,13 +29,11 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 	protected void messageReceived(ChannelHandlerContext ctx, String msg) throws Exception {
 		try {
 			if (msg.length() == 0) {
-				msg = msg + "{\"type\":\"접속 끊겨또.. 힝 ㅠ.,ㅜ\"}";
-				System.out.println(msg);
+				System.out.println("잘못된 요청");
 			}
 
 			JSONObject jsonObj = (JSONObject) parser.parse(msg);
 			String type = (String) jsonObj.get("type");
-			System.out.println(msg);
 
 			if ("member".equals(type)) {
 				Member member = new Member();
@@ -58,13 +56,11 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 					resultJson.put("method", method);
 
 					if (id != null && name != null && phoneNo != null) {
-						System.out.println("1번째 들어오나?");
 						member.setId(id);
 						member.setName(name);
 						member.setPhoneNo(phoneNo);
 
 						resultMember = memberServiceImpl.searchMemberInfo(member);
-						System.out.println("resultMember 결과 : " + resultMember);
 						if (resultMember != null) {
 							resultJson.put("status", NettyServer.SUCCESS);
 						} else {
@@ -75,7 +71,6 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 						resultJson.put("status", NettyServer.SUCCESS);
 					}
 
-					System.out.println("auth 결과 : " + resultJson);
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
 
@@ -117,8 +112,6 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 					resultJson.put("method", method);
 					resultJson.put("status", result);
 
-					System.out.println(resultJson.toJSONString());
-
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;
 
@@ -136,18 +129,14 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 
 				// 비밀번호 재설정
 				case "resetPassword":
-					System.out.println("들어오냐?");
 					member.setId((String) jsonObj.get("id"));
 					member.setPassword((String) jsonObj.get("newPassword"));
-
-					System.out.println("멤버 : " + member);
 
 					resultJson.put("method", method);
 					resultJson.put("status", result);
 					
 					if (jsonObj.get("newPassword") != null) {
 						int resetResult = memberServiceImpl.updateMemberInfo(member);
-						System.out.println("resetResult = " + resetResult);
 
 						if (resetResult == 0) {
 							resultJson.put("status", NettyServer.FAIL);
@@ -157,8 +146,6 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 					} else {
 						resultJson.put("status", NettyServer.FAIL);
 					}
-
-					System.out.println("resultJson : " + resultJson.toJSONString());
 
 					ctx.writeAndFlush(resultJson.toJSONString());
 					break;

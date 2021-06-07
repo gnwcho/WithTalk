@@ -23,9 +23,6 @@ public class FriendServiceImpl implements FriendService{
 	@Override
 	public int insert(Friend friend) {
 		try {
-//			int no = friendMapper.plusSeq();
-//			System.out.println("no" + no);
-			System.out.println("friend : " + friend.getFriendId());
 			int result = friendMapper.insert(friend);
 			
 			return result;
@@ -52,10 +49,7 @@ public class FriendServiceImpl implements FriendService{
 	@Override
 	public Member search(Member member) {
 		try {
-			System.out.println("search 들어옴=============================================== " );
-			System.out.println("넘어온 Member : " + member);
 			Member row = memberMapper.select(member);
-			System.out.println("selectByName 결과 : " + row);
 			
 			return row;
 		} catch (Exception e) {
@@ -96,11 +90,7 @@ public class FriendServiceImpl implements FriendService{
 	@Override
 	public List<Member> selectByName(Member member) {
 		try {
-			System.out.println("FriendServiceImpl 클래스 selectByName 메소드 들어옴");
-			System.out.println("member ID : " + member.getId() + "|| member Name : " + member.getName());
 			List<Member> rows = friendMapper.selectByName(member);
-			
-			//rows.remove(member.getId());
 			
 			return rows;
 		} catch (Exception e) {

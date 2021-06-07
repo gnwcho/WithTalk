@@ -25,7 +25,6 @@ public class CommonServiceImpl implements CommonService {
 		//로그인 성공
 		if (memberMapper.select(member) != null) {
 			mappingMember.put(member.getId(), ctx.channel());
-			System.out.println(mappingMember.get(member.getId()));
 			result = "r200";
 		} else {
 			result = "r400";
@@ -41,7 +40,6 @@ public class CommonServiceImpl implements CommonService {
 		
 		if (mappingMember.get(id) != null) {
 			mappingMember.put(id, null);
-			System.out.println(mappingMember.get(id));
 			result = "r200";
 		} else {
 			result = "r400";

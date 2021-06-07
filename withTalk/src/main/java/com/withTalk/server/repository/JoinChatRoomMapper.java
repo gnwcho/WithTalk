@@ -10,8 +10,6 @@ import com.withTalk.server.model.Message;
 
 @Mapper
 public interface JoinChatRoomMapper {
-	//참여 조회
-	//public JoinChatRoom select (JoinChatRoom joinChatRoom) throws Exception;
 	//참여 삽입
 	public int insert (JoinChatRoom joinChatRoom) throws Exception;
 	//참여 삭제

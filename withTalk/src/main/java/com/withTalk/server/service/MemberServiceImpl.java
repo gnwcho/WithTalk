@@ -42,20 +42,11 @@ public class MemberServiceImpl implements MemberService {
 		return result;
 	}
 	
-	public List<Member> findId(Member member) throws Exception {
-
-		return null;
-	}
-
-	public List<Member> searchMemberInfoList(Member member) throws Exception {
-		return null;
-	}
 
 	//사용자 정보 조회
 	public Member searchMemberInfo(Member member) throws Exception {
-		System.out.println("서비스 들어온 멤버 : " + member);
 		Member row = memberMapper.select(member);
-		System.out.println("row : " + row);
+		
 		if (row != null) {
 			return row;
 		} else {
@@ -63,18 +54,9 @@ public class MemberServiceImpl implements MemberService {
 		}
 	}
 
-	public void modifyMemberInfo(Member member) throws Exception {
-
-	}
-
 	//사용자 정보 수정
 	@Override
 	public int updateMemberInfo(Member member) throws Exception {
-		System.out.println("serviceImpl 들어오냐?");
-		memberMapper.update(member);
-		System.out.println("처리함 ? ");
-		
-		return 1;
+		return memberMapper.update(member);
 	}
-
 }

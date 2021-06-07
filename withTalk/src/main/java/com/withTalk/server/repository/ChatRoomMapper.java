@@ -19,11 +19,8 @@ public interface ChatRoomMapper {
 	public int selectNo() throws Exception;
 	//대화방 삭제
 	public int delete(ChatRoom chatRoom) throws Exception;
-	//테스트
-	public int test() throws Exception;
 	//대화방 인원 수정
 	public void updateCount(ChatRoom chatRoom) throws Exception;
 	//대화방 인원 조회
 	public int selectCount(ChatRoom chatRoom) throws Exception;
-	//개인방 조회
 }

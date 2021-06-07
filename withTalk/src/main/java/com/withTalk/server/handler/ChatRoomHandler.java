@@ -62,6 +62,7 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 			
 			String result = null;
 			String status = null;
+			
 			int no = 0;
 			int chatRoomNo = 0;
 
@@ -102,14 +103,10 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 									member.setId(receiverId.get(1));
 									member = memberServiceImpl.searchMemberInfo(member);
 									
-									System.out.println("=================================================================");
-									System.out.println("chatRoomName : " + member.getName());
 									chatRoomNo =  chatRoom.getSequenceNo();
 									resultJson.put("chatRoomName", member.getName());
 									resultJson.put("chatRoomNo", chatRoomNo);
 									
-									System.out.println("대화방 생성 결과 : " + resultJson);
-
 									ch.writeAndFlush(resultJson.toJSONString());
 								} else {
 									Member member = new Member();
@@ -119,9 +116,6 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 									resultJson.put("chatRoomName", member.getName());
 									resultJson.put("chatRoomNo", chatRoom.getSequenceNo());
 									
-									System.out.println("=====================================222222222=========22");
-									System.out.println("chatRoomName : " + member.getName());
-
 									ch.writeAndFlush(resultJson.toJSONString());
 								}
 							} else {
@@ -143,7 +137,7 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 					break;
 				}
 
-				// 대화방 조회
+			// 대화방 조회
 			case "select":
 				no = (int) jsonObj.get("chatRoomNo");
 				chatRoom.setSequenceNo(no);
@@ -209,11 +203,9 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 			// 대화방 검색
 			case "search": ////////////////////////////////////
 				// To DO
-				System.out.println("대화방 검색 들어온 요청 : " + jsonObj);
 				joinChatRoom.setChatRoomName((String) jsonObj.get("chatRoomName"));
 				joinChatRoom.setMemberId((String) jsonObj.get("senderId"));
 				resultJoinChatRoomList = joinChatRoomServiceImpl.select(joinChatRoom);
-				System.out.println("resultJoinChatRoomList 결과 : " + resultJoinChatRoomList);
 
 				List<JSONObject> searchJoinChatRoomList = new ArrayList<JSONObject>();
 				JSONObject searchJoinChatRoom = null;
@@ -238,7 +230,6 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 					resultJson.put("searchChatRoomList", null);
 				}
 
-				System.out.println("searchJoinChatRoom 결과 : " + resultJson);
 				ctx.writeAndFlush(resultJson.toJSONString());
 				break;
 
@@ -248,7 +239,6 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 				joinChatRoom.setMemberId(id);
 
 				List<Message> selectByIdList = joinChatRoomServiceImpl.selectById(joinChatRoom);
-				System.out.println("selectByIdList : " + selectByIdList);
 				List<Integer> noList = new ArrayList<Integer>();
 				List<String> timeList = new ArrayList<String>();
 				
@@ -272,7 +262,6 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 					resultJson.put("chatRoomList", null);
 				}
 
-				System.out.println("selectAllChatRoom 결과 : " + resultJson);
 				ctx.writeAndFlush(resultJson.toJSONString());
 				break;
 
@@ -297,7 +286,6 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 						resultJson.put("chatRoomNo", chatRoomNo);
 						resultJson.put("newName", chatRoomName);
 
-						System.out.println("updateName 결과 : " + resultJson);
 						ctx.writeAndFlush(resultJson.toJSONString());
 						break;
 					}
@@ -307,7 +295,6 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 				resultJson.put("chatRoomNo", -1);
 				resultJson.put("newName", null);
 
-				System.out.println("updateName 결과 : " + resultJson);
 				ctx.writeAndFlush(resultJson.toJSONString());
 				break;
 
