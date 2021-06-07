@@ -29,7 +29,7 @@ public class MemberHandler extends SimpleChannelInboundHandler<String> {
 	protected void messageReceived(ChannelHandlerContext ctx, String msg) throws Exception {
 		try {
 			if (msg.length() == 0) {
-				msg = msg + "{\"type\":\"접속 해제\"}";
+				msg = msg + "{\"type\":\"접속 끊겨또.. 힝 ㅠ.,ㅜ\"}";
 				System.out.println(msg);
 			}
 

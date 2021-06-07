@@ -17,6 +17,7 @@ import com.withTalk.server.model.Member;
 import com.withTalk.server.model.Message;
 import com.withTalk.server.nettyserver.NettyServer;
 import com.withTalk.server.service.ChatRoomServiceImpl;
+import com.withTalk.server.service.ChatServiceImpl;
 import com.withTalk.server.service.JoinChatRoomServiceImpl;
 import com.withTalk.server.service.MemberServiceImpl;
 
@@ -40,6 +41,8 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 	public Map<Integer, Set<String>> chatRoomMap;
 	@Autowired
 	public MemberServiceImpl memberServiceImpl;
+	@Autowired
+	public ChatServiceImpl chatServiceImpl;
 
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, String msg) throws Exception {
@@ -56,10 +59,11 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 			JSONObject resultJson = new JSONObject();
 
 			String method = (String) jsonObj.get("method");
-
+			
 			String result = null;
 			String status = null;
 			int no = 0;
+			int chatRoomNo = 0;
 
 			switch (method) {
 			// 대화방 생성
@@ -100,8 +104,9 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 									
 									System.out.println("=================================================================");
 									System.out.println("chatRoomName : " + member.getName());
+									chatRoomNo =  chatRoom.getSequenceNo();
 									resultJson.put("chatRoomName", member.getName());
-									resultJson.put("chatRoomNo", chatRoom.getSequenceNo());
+									resultJson.put("chatRoomNo", chatRoomNo);
 									
 									System.out.println("대화방 생성 결과 : " + resultJson);
 
@@ -120,8 +125,16 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 									ch.writeAndFlush(resultJson.toJSONString());
 								}
 							} else {
+								Message message = new Message();
+								
+								message.setContents("대화방 생성");
+								message.setSenderId(senderId);
+								message.setChatRoomNo(Integer.parseInt(String.valueOf(jsonObj.get("chatRoomNo"))));
+								
+								message = chatServiceImpl.sendMessage(message);
+								
 								resultJson.put("chatRoomName", joinChatRoom.getChatRoomName());
-								resultJson.put("chatRoomNo", chatRoom.getSequenceNo());
+								resultJson.put("chatRoomNo", chatRoomNo);
 								
 								ch.writeAndFlush(resultJson.toJSONString());
 							}
@@ -266,7 +279,7 @@ public class ChatRoomHandler extends SimpleChannelInboundHandler<String> {
 			case "updateName":
 				if (jsonObj.get("chatRoomNo") != null && jsonObj.get("newName") != null
 						&& jsonObj.get("senderId") != null) {
-					int chatRoomNo = Integer.parseInt(String.valueOf(jsonObj.get("chatRoomNo")));
+					chatRoomNo = Integer.parseInt(String.valueOf(jsonObj.get("chatRoomNo")));
 					String chatRoomName = (String) jsonObj.get("newName");
 					String memberId = (String) jsonObj.get("senderId");
 
